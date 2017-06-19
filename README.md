@@ -32,8 +32,8 @@ Please create an [Issue](https://github.com/jr3cermak/particle/issues) or post o
 
 ## Support
 
-If you find a bug, please create an Issue.  Include steps and as much information
-you can to reproduce the bug.  
+If you find a bug, please create an [Issue](https://github.com/jr3cermak/particle/issues).
+Include steps and as much information you can to reproduce the bug.  
 
 Inactive issues may be closed with notice after one month.
 
