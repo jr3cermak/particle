@@ -1,0 +1,89 @@
+#!/bin/bash
+#set -x
+
+# This script provides the quickest means to convert code
+# from the original axTLS source tree to code that makes
+# up the ported Particle axtls library.
+##
+
+# Save the operating ROOT directory
+##
+ROOT=`pwd`
+PARTICLE_PROJECT_DIR=/Users/cermak/Particle/libraries
+
+# Define a main source directory (SRC)
+# Define the target Particle project directory (PPD)
+# New code not found in the source directory (ORG)
+SRC=${ROOT}/axtls-code
+ORG=${ROOT}/axtls-custom-lib
+PPD=${PARTICLE_PROJECT_DIR}/axtls/src
+
+# Special patch files
+##
+PATCHDIR=${ROOT}/axtls-patches-lib
+
+# Original particle project tree
+##
+ORIG=""
+
+# Copy and rename crypto 
+##
+cd ${SRC}/crypto
+for i in $(ls *.c); do
+  cp ${i} ${PPD}/${i}pp
+done
+for i in $(ls *.h); do
+  cp ${i} ${PPD}/${i}
+done
+# Copy and rename ssl
+## 
+cd ${SRC}/ssl
+for i in $(ls *.c); do
+  cp ${i} ${PPD}/${i}pp
+done
+for i in $(ls *.h); do
+  cp ${i} ${PPD}/${i}
+done
+# Copy and rename custom code
+## 
+cd ${ORG}
+for i in $(ls *.c); do
+  cp ${i} ${PPD}/${i}pp
+done
+for i in $(ls *.h); do
+  cp ${i} ${PPD}/${i}
+done
+
+# Recompute patches
+cd ${PATCHDIR}
+for i in $(ls *.cpp *.h); do
+  if [ -e "${i}" -a -e "${i}.orig" ];
+  then
+    diff -u ${i}.orig ${i} > ${i}.patch
+  fi
+done
+
+# Do special patching in final directory
+##
+echo "Performing patching on specific files:"
+cd ${PPD}
+for i in $(ls *.cpp *.h); do
+  if [ -e "${PATCHDIR}/${i}.patch" ];
+  then
+    echo -n "  ";
+    patch -p0 < ${PATCHDIR}/${i}.patch
+  fi
+done
+
+# Make some sweeping code changes to facilitate port
+##
+# printf -> //printf
+##
+cd ${PPD}
+for i in $(ls *.cpp *.h); do
+  sed -i .x -e '1,$s%^\(.*\)[[:blank:]]printf%\1//printf%g' $i
+  if [ -e "${i}.x" ];
+  then
+    rm ${i}.x
+  fi
+done

@@ -4,6 +4,8 @@
 
 This port of the [axTLS](http://axtls.sourceforge.net/) library is based on version 2.1.3 by Cameron Rich.
 
+Specific porting notes are in PORT.md
+
 Use of mutex(threading) is currently disabled.  Threading might be interesting to investigate later.
 
 There is a main SSL_CTX (ssl context) in which several SSL sessions can be created
@@ -19,8 +21,21 @@ keep all the pointers to those objects in the SSL link list.
 There is a base certificate provided in the code for initializing the SSL layer.  We need to
 know how to update it in the future.
 
-There are many many command line functions that are not implemented in this software stack
+There are many command line functions that are not implemented in this software stack
 at present.  Authentication and alternative certificates, etc.
+
+There are many diagnostic printf and the like type statements that have been
+commented out in bulk by sed.  Other <stdio.h> functions are not available in
+the C library for the Particle.   If you get printf or gettimeofday symbol 
+references look for these functions and comment them out and rewrite them. 
+Other rogue calls to time(), putc() and vsprint() will also trigger these
+errors.  The only way to find them is to comment out or #define big blocks of
+code out and slowly bring code/functions back into operation.  If you include
+one function call at a time, you will slowly find the offending code that uses
+<stdio.h> functions that should be avoided.
+
+There are some reserved words and variables imported via "Particle.h" or
+"application.h" that needed to be avoided.
 
 # Implementation
 
