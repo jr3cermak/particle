@@ -38,6 +38,9 @@
 #include <stdarg.h>
 #include "os_port.h"
 #include "ssl.h"
+#if defined(CONFIG_DEBUG) && defined(CONFIG_PLATFORM_PARTICLE)
+#include "axtls_logging.h"
+#endif
 
 /* The session expiry time */
 #define SSL_EXPIRY_TIME     (CONFIG_SSL_EXPIRY_TIME*3600)
@@ -353,9 +356,15 @@ int add_cert(SSL_CTX *ssl_ctx, const uint8_t *buf, int len)
     if (i == CONFIG_SSL_MAX_CERTS) /* too many certs */
     {
 #ifdef CONFIG_SSL_FULL_MODE
+#if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("Error: maximum number of certs added (%d) - change of "
                 "compile-time configuration required\n",
                 CONFIG_SSL_MAX_CERTS);
+#else
+        debug_tls("Error: maximum number of certs added (%d) - change of "
+                "compile-time configuration required",
+                CONFIG_SSL_MAX_CERTS);
+#endif /* PARTICLE */
 #endif
         goto error;
     }
@@ -363,7 +372,7 @@ int add_cert(SSL_CTX *ssl_ctx, const uint8_t *buf, int len)
     if ((ret = x509_new(buf, &offset, &cert)))
         goto error;
 
-#if defined (CONFIG_SSL_FULL_MODE)
+#if defined(CONFIG_SSL_FULL_MODE)
     if (ssl_ctx->options & SSL_DISPLAY_CERTS)
         x509_print(cert, NULL);
 #endif
@@ -431,9 +440,15 @@ int add_cert_auth(SSL_CTX *ssl_ctx, const uint8_t *buf, int len)
         if (i >= CONFIG_X509_MAX_CA_CERTS)
         {
 #ifdef CONFIG_SSL_FULL_MODE
+#if !defined(CONFIG_PLATFORM_PARTICLE)
            //printf("Error: maximum number of CA certs added (%d) - change of "
                     "compile-time configuration required\n", 
                     CONFIG_X509_MAX_CA_CERTS);
+#else
+            debug_tls("Error: maximum number of CA certs added (%d) - change of "
+                    "compile-time configuration required", 
+                    CONFIG_X509_MAX_CA_CERTS);
+#endif /* PARTICLE */
 #endif
             ret = X509_MAX_CERTS;
             break;
@@ -531,7 +546,11 @@ EXP_FUNC const char * STDCALL ssl_get_cert_subject_alt_dnsname(const SSL *ssl,
 /*
  * Find an ssl object based on the client's file descriptor.
  */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 EXP_FUNC SSL * STDCALL ssl_find(SSL_CTX *ssl_ctx, int client_fd)
+#else
+EXP_FUNC SSL * STDCALL ssl_find(SSL_CTX *ssl_ctx, SSL *client_fd)
+#endif
 {
     SSL *ssl;
 
@@ -603,12 +622,20 @@ static const cipher_info_t *get_cipher_info(uint8_t cipher)
 /*
  * Get a new ssl context for a new connection.
  */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 SSL *ssl_new(SSL_CTX *ssl_ctx, int client_fd)
+#else
+SSL *ssl_new(SSL_CTX *ssl_ctx, SSL *client_fd)
+#endif
 {
     SSL *ssl = (SSL *)calloc(1, sizeof(SSL));
     ssl->ssl_ctx = ssl_ctx;
     ssl->need_bytes = SSL_RECORD_SIZE;      /* need a record */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
     ssl->client_fd = client_fd;
+#else
+    ssl->client_fd = ssl;
+#endif
     ssl->flag = SSL_NEED_RECORD;
     ssl->bm_data = ssl->bm_all_data+BM_RECORD_OFFSET; /* space at the start */
     ssl->hs_status = SSL_NOT_OK;            /* not connected */
@@ -1073,6 +1100,11 @@ static int send_raw_packet(SSL *ssl, uint8_t protocol)
                 return SSL_ERROR_CONN_LOST;
         }
 
+/** 
+ * Particle platform should not block I/O; we set a timeout in the read() callback 
+ * and we also check for dropped connection.
+ */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
         /* keep going until the write buffer has some space */
         if (sent != pkt_size)
         {
@@ -1084,6 +1116,7 @@ static int send_raw_packet(SSL *ssl, uint8_t protocol)
             if (select(ssl->client_fd + 1, NULL, &wfds, NULL, NULL) < 0)
                 return SSL_ERROR_CONN_LOST;
         }
+#endif /* Not PARTICLE */
     }
 
     SET_SSL_FLAG(SSL_NEED_RECORD);  /* reset for next time */
@@ -1167,7 +1200,7 @@ int send_packet(SSL *ssl, uint8_t protocol, const uint8_t *in, int length)
         if (ssl->version >= SSL_PROTOCOL_VERSION_TLS1_1)
         {
             uint8_t iv_size = ssl->cipher_info->iv_size;
-            uint8_t *t_buf = alloca(msg_length + iv_size);
+            uint8_t *t_buf = (uint8_t *)alloca(msg_length + iv_size);
             memcpy(t_buf + iv_size, ssl->bm_data, msg_length);
             if (get_random(iv_size, t_buf) < 0)
                 return SSL_NOT_OK;
@@ -1754,6 +1787,49 @@ void disposable_free(SSL *ssl)
     }
 
 }
+
+#if defined(CONFIG_PLATFORM_PARTICLE)
+/*
+ * Setup function callbacks to read()/f_recv and write()/f_send functions to work with TCPClient.
+ */
+void set_io_callbacks(SSL_CTX *ssl_ctx, axtls_ssl_send_t *f_send, axtls_ssl_recv_t *f_recv) {
+  debug_tls("Assigning function callbacks ssl_ctx(%p) f_send(%p) f_recv(%p)", ssl_ctx, f_send, f_recv);
+  ssl_ctx->f_send = f_send;
+  ssl_ctx->f_recv = f_recv;
+}
+
+/**
+ * Write packet data to TCPClient.
+ * Returns number of bytes sent.  Aliased to SOCKET_WRITE.
+ */
+int writeParticle(SSL *ssl, uint8_t *rec_buf, int sz_buf) {
+  int nbytes;
+
+  // We have to dig out the function call to send the data
+  SSL *real_ssl = (SSL *) ssl;
+  SSL_CTX *ssl_ctx = real_ssl->ssl_ctx;
+
+  debug_tls("writeParticle() ssl(%p) ssl_ctx(%p) f_send(%p)",ssl,ssl_ctx,ssl_ctx->f_send);
+  nbytes = ssl_ctx->f_send(ssl, rec_buf, sz_buf);
+  return nbytes;
+}
+
+/**
+ * Read packet from TCPClient
+ * Returns number of bytes read.  Aliased to SOCKET_READ.
+ */
+int readParticle(SSL *ssl, uint8_t *rec_buf, int sz_buf) {
+  int nbytes;
+
+  // We have to dig out the function call to send the data
+  SSL *real_ssl = (SSL *) ssl;
+  SSL_CTX *ssl_ctx = real_ssl->ssl_ctx;
+
+  debug_tls("readParticle() ssl(%p) ssl_ctx(%p) f_recv(%p)",ssl,ssl_ctx,ssl_ctx->f_send);
+  nbytes = ssl_ctx->f_recv(ssl, rec_buf, sz_buf);
+  return nbytes;
+}
+#endif
 
 #ifndef CONFIG_SSL_SKELETON_MODE     /* no session resumption in this mode */
 /**

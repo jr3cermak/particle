@@ -305,6 +305,7 @@ void AES_cbc_encrypt(AES_CTX *ctx, const uint8_t *msg, uint8_t *out, int length)
 /**
  * Decrypt a byte sequence (with a block size 16) using the AES cipher.
  */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 void AES_cbc_decrypt(AES_CTX *ctx, const uint8_t *msg, uint8_t *out, int length)
 {
     int i;
@@ -344,6 +345,47 @@ void AES_cbc_decrypt(AES_CTX *ctx, const uint8_t *msg, uint8_t *out, int length)
         iv[i] = htonl(xor[i]);
     memcpy(ctx->iv, iv, AES_IV_SIZE);
 }
+#else /* PARTICLE */
+void AES_cbc_decrypt(AES_CTX *ctx, const uint8_t *msg, uint8_t *out, int length)
+{
+    int i;
+    uint32_t tin[4], txor[4], tout[4], data[4], iv[4];
+
+    memcpy(iv, ctx->iv, AES_IV_SIZE);
+    for (i = 0; i < 4; i++)
+        txor[i] = ntohl(iv[i]);
+
+    for (length -= 16; length >= 0; length -= 16)
+    {
+        uint32_t msg_32[4];
+        uint32_t out_32[4];
+        memcpy(msg_32, msg, AES_BLOCKSIZE);
+        msg += AES_BLOCKSIZE;
+
+        for (i = 0; i < 4; i++)
+        {
+            tin[i] = ntohl(msg_32[i]);
+            data[i] = tin[i];
+        }
+
+        AES_decrypt(ctx, data);
+
+        for (i = 0; i < 4; i++)
+        {
+            tout[i] = data[i]^txor[i];
+            txor[i] = tin[i];
+            out_32[i] = htonl(tout[i]);
+        }
+
+        memcpy(out, out_32, AES_BLOCKSIZE);
+        out += AES_BLOCKSIZE;
+    }
+
+    for (i = 0; i < 4; i++)
+        iv[i] = htonl(txor[i]);
+    memcpy(ctx->iv, iv, AES_IV_SIZE);
+}
+#endif /* PARTICLE */
 
 /**
  * Encrypt a single block (16 bytes) of data

@@ -15,16 +15,16 @@ Any specialized tools are in the bin directory.
 This script will operate from the axTLS source tree in its native form.  You need to
 define several locations:
 
-* PARTICLE_PROJECT_DIR: root library directory destination, not the library
-* SRC: root of the axTLS source tree
-* ORG: any original code you need in ADDITION to the axTLS library; this includes the new Particle class code
-* PPD: this is the destination directory for the library
+* `${PARTICLE_PROJECT_DIR}`: root library directory destination, not the library
+* `${SRC}`: root of the axTLS source tree
+* `${ORG}`: any original code you need in ADDITION to the axTLS library; this includes the new Particle class code
+* `${PPD}`: this is the destination directory for the library
 
 What this script does in a nutshell:
 
 * Copies *.c and *.h files to the destination libary
   * c files are renamed on the fly to cpp
-* Custom code from ${ORG} is copied.
+* Custom code from `${ORG}` is copied.
   * c files are renamed on the fly to cpp
   * Particle class files should be named .c
 * If you have made customized changes to original code, the script checks for an original file and a
@@ -47,6 +47,7 @@ sha512.cpp requires a be64toh() function
 aes.cpp requires a ntohl() function
 
 * REF: https://developer.mbed.org/users/vshymanskyy/code/Blynk/docs/b942afadf9be/BlynkProtocolDefs_8h_source.html
+* This is a pretty good bet as there is a define() that checks for a PARTICLE definition.
 
 ```
 /**
@@ -60,7 +61,59 @@ aes.cpp requires a ntohl() function
  */
 ```
 
+# Newly created content
+
+## axtls_logging.h
+
+See design notes for implementation details.  Logger does not need to be defined
+as extern as Particle does that through "application.h".
+
 # Source files
+
+## bigint.cpp
+
+* Add `#include "axtls_logging.h"` to the top if CONFIG_DEBUG && CONFIG_PLATFORM_PARTICLE is defined.
+* Fix up printf statements that span multiple lines.
+* There is a small section to fix up in bi_print().   
+
+## tls1.h
+
+* Add prototype definitions for I/O callback functions.
+* Add f_send/f_recv and _client to SSL_CTX (ssl context) typedef.
+  * _client will keep the pointer to TCPClient.
+* Add typedefs for the callback function variables.
+* In the SSL typedef, we will replace the (int) with (_SSL*) which will be just
+a pointer back to the SSL structure.  This avoids messing with SOCKET_READ() and SOCKET_WRITE().
+* Doing that, we have to fix a couple of additional functions and prototypes using client_fd.
+  * ssl_find()
+  * ssl_new()
+
+## tls1.cpp
+
+* The bulk commenting out of printf has side effects.  Any multiline printf statements
+cause errors.  We will rewrite these now.
+* Begin layering in logging support to SerialUsb and plain Serial. 
+* Add `#include "axtls_logging.h"` to the top if CONFIG_DEBUG && CONFIG_PLATFORM_PARTICLE is defined.
+* Add Particle specific routines for I/O with TCPClient using function callbacks.
+* send_raw_packet(); rework file descriptor use
+* send_packet(); alloca needs a cast on the return pointer
+
+## aes.cpp
+
+* Reserved word `xor` used; renamed to 'txor' in #define copy of code
+
+## os_port.h
+
+* Include ntohl() patch
+* Avoid unnecessary #include, particular failure was <netdb.h>
+* Need to define SOCKET_WRITE, SOCKET_READ and SOCKET_CLOSE
+
+```
+#define SOCKET_READ(A,B,C)      readParticle(A,B,C)
+#define SOCKET_WRITE(A,B,C)     writeParticle(A,B,C)
+#define SOCKET_CLOSE(A)         closeParticle(A)
+#define TTY_FLUSH()
+```
 
 ## debugging.cpp; debugging.h
 

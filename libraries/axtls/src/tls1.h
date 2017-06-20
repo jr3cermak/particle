@@ -194,7 +194,11 @@ struct _SSL
     int16_t next_state;
     int16_t hs_status;
     DISPOSABLE_CTX *dc;         /* temporary data which we'll get rid of soon */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
     int client_fd;
+#else
+    _SSL *client_fd;
+#endif
     const cipher_info_t *cipher_info;
     void *encrypt_ctx;
     void *decrypt_ctx;
@@ -214,7 +218,6 @@ struct _SSL
 #ifdef CONFIG_SSL_CERT_VERIFICATION
     X509_CTX *x509_ctx;
 #endif
-
     uint8_t session_id[SSL_SESSION_ID_SIZE]; 
     uint8_t client_mac[SHA256_SIZE];    /* for HMAC verification */
     uint8_t server_mac[SHA256_SIZE];    /* for HMAC verification */
@@ -225,6 +228,22 @@ struct _SSL
 };
 
 typedef struct _SSL SSL;
+
+#if defined(CONFIG_PLATFORM_PARTICLE)
+/**
+ * Define the I/O callback functions through a typedef
+ */
+typedef int axtls_ssl_send_t(
+  void *ssl,
+  uint8_t *out_data,
+  int out_len
+);
+typedef int axtls_ssl_recv_t(
+  void *ssl,
+  uint8_t *in_data,
+  int in_len
+);
+#endif
 
 struct _SSL_CTX
 {
@@ -247,6 +266,11 @@ struct _SSL_CTX
 #ifdef CONFIG_OPENSSL_COMPATIBLE
     void *bonus_attr;
 #endif
+#ifdef CONFIG_PLATFORM_PARTICLE
+    axtls_ssl_send_t *f_send;
+    axtls_ssl_recv_t *f_recv;
+    void *_client;
+#endif
 };
 
 typedef struct _SSL_CTX SSL_CTX;
@@ -256,7 +280,11 @@ typedef struct _SSL_CTX SSLCTX;
 
 extern const uint8_t ssl_prot_prefs[NUM_PROTOCOLS];
 
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 SSL *ssl_new(SSL_CTX *ssl_ctx, int client_fd);
+#else
+SSL *ssl_new(SSL_CTX *ssl_ctx, void *client_fd);
+#endif
 void disposable_new(SSL *ssl);
 void disposable_free(SSL *ssl);
 int send_packet(SSL *ssl, uint8_t protocol, 
@@ -309,6 +337,12 @@ void DISPLAY_BYTES(SSL *ssl, const char *format,/* win32 has no variadic macros 
 
 #ifdef CONFIG_SSL_CERT_VERIFICATION
 int process_certificate(SSL *ssl, X509_CTX **x509_ctx);
+#endif
+
+#ifdef CONFIG_PLATFORM_PARTICLE
+void set_io_callbacks(SSL_CTX *ssl_ctx, axtls_ssl_send_t *f_send, axtls_ssl_recv_t *f_recv);
+int writeParticle(SSL *ssl, uint8_t *rec_buf, int sz_buf);
+int readParticle(SSL *ssl, uint8_t *rec_buf, int sz_buf);
 #endif
 
 SSL_SESSION *ssl_session_update(int max_sessions, 

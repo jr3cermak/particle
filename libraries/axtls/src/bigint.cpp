@@ -67,6 +67,9 @@
 #include <time.h>
 #include "os_port.h"
 #include "bigint.h"
+#if defined(CONFIG_DEBUG) && defined(CONFIG_PLATFORM_PARTICLE)
+#include "axtls_logging.h"
+#endif
 
 #define V1      v->comps[v->size-1]                 /**< v1 for division */
 #define V2      v->comps[v->size-2]                 /**< v2 for division */
@@ -123,8 +126,13 @@ void bi_terminate(BI_CTX *ctx)
     if (ctx->active_count != 0)
     {
 #ifdef CONFIG_SSL_FULL_MODE
+#if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("bi_terminate: there were %d un-freed bigints\n",
                        ctx->active_count);
+#else
+        debug_tls("bi_terminate: there were %d un-freed bigints",
+                       ctx->active_count);
+#endif /* PARTICLE */
 #endif
         abort();
     }
@@ -180,7 +188,11 @@ void bi_permanent(bigint *bi)
     if (bi->refs != 1)
     {
 #ifdef CONFIG_SSL_FULL_MODE
+#if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("bi_permanent: refs was not 1\n");
+#else
+        debug_tls("bi_permanent: refs was not 1");
+#endif /* PARTICLE */
 #endif
         abort();
     }
@@ -198,7 +210,11 @@ void bi_depermanent(bigint *bi)
     if (bi->refs != PERMANENT)
     {
 #ifdef CONFIG_SSL_FULL_MODE
+#if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("bi_depermanent: bigint was not permanent\n");
+#else
+        debug_tls("bi_depermanent: bigint was not permanent");
+#endif /* PARTICLE */
 #endif
         abort();
     }
@@ -233,8 +249,13 @@ void bi_free(BI_CTX *ctx, bigint *bi)
     if (--ctx->active_count < 0)
     {
 #ifdef CONFIG_SSL_FULL_MODE
+#if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("bi_free: active_count went negative "
                 "- double-freed bigint?\n");
+#else
+        debug_tls("bi_free: active_count went negative "
+                "- double-freed bigint?");
+#endif /* PARTICLE */
 #endif
         abort();
     }
@@ -677,11 +698,20 @@ void bi_print(const char *label, bigint *x)
 
     if (x == NULL)
     {
+#if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("%s: (null)\n", label);
+#else
+        debug_tls("%s: (null)", label);
+#endif /* PARTICLE */
         return;
     }
 
+#if !defined(CONFIG_PLATFORM_PARTICLE)
    //printf("%s: (size %d)\n", label, x->size);
+#else
+    debug_tls("%s: (size %d)", label, x->size);
+#endif /* PARTICLE */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
     for (i = x->size-1; i >= 0; i--)
     {
         for (j = COMP_NUM_NIBBLES-1; j >= 0; j--)
@@ -693,6 +723,7 @@ void bi_print(const char *label, bigint *x)
     }  
 
    //printf("\n");
+#endif /* Not PARTICLE */
 }
 #endif
 
@@ -1098,7 +1129,11 @@ static bigint *alloc(BI_CTX *ctx, int size)
         if (biR->refs != 0)
         {
 #ifdef CONFIG_SSL_FULL_MODE
+#if !defined(CONFIG_PLATFORM_PARTICLE)
            //printf("alloc: refs was not 0\n");
+#else
+            debug_tls("alloc: refs was not 0");
+#endif /* PARTICLE */
 #endif
             abort();    /* create a stack trace from a core dump */
         }
@@ -1174,14 +1209,23 @@ static void check(const bigint *bi)
 {
     if (bi->refs <= 0)
     {
+#if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("check: zero or negative refs in bigint\n");
+#else
+        debug_tls("check: zero or negative refs in bigint");
+#endif /* PARTICLE */
         abort();
     }
 
     if (bi->next != NULL)
     {
+#if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("check: attempt to use a bigint from "
                 "the free list\n");
+#else
+        debug_tls("check: attempt to use a bigint from "
+                "the free list");
+#endif /* PARTICLE */
         abort();
     }
 }

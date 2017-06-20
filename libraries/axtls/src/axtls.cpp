@@ -2,6 +2,10 @@
  */
 
 #include "axtls.h"
+#if defined(CONFIG_DEBUG) && defined(CONFIG_PLATFORM_PARTICLE)
+#include "axtls_logging.h"
+#endif
+#endif
 
 /**
  * Constructor.

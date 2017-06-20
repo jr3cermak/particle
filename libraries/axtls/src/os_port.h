@@ -122,7 +122,7 @@ EXP_FUNC void STDCALL gettimeofday(struct timeval* t,void* timezone);
 EXP_FUNC int STDCALL strcasecmp(const char *s1, const char *s2);
 EXP_FUNC int STDCALL getdomainname(char *buf, int buf_size);
 
-#else   /* Not Win32 */
+#elif !defined(CONFIG_PLATFORM_PARTICLE)   /* Not WIN32 */
 
 #include <unistd.h>
 #include <pwd.h>
@@ -147,7 +147,41 @@ EXP_FUNC int STDCALL getdomainname(char *buf, int buf_size);
 #define be64toh(x) __be64_to_cpu(x)
 #endif
 
-#endif  /* Not Win32 */
+#else /* PARTICLE */
+
+/**
+ * @file       BlynkProtocolDefs.h
+ * @author     Volodymyr Shymanskyy
+ * @license    This project is released under the MIT License (MIT)
+ * @copyright  Copyright (c) 2015 Volodymyr Shymanskyy
+ * @date       Jan 2015
+ * @brief      Blynk protocol definitions
+ * REF: https://developer.mbed.org/users/vshymanskyy/code/Blynk/docs/b942afadf9be/BlynkProtocolDefs_8h_source.html
+ * Macros to implement ntohl(), etc.  We only use a small part of the include file.
+ */
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+        #define htons(x) ( ((x)<<8) | (((x)>>8)&0xFF) )
+        #define htonl(x) ( ((x)<<24 & 0xFF000000UL) | \
+                           ((x)<< 8 & 0x00FF0000UL) | \
+                           ((x)>> 8 & 0x0000FF00UL) | \
+                           ((x)>>24 & 0x000000FFUL) )
+        #define ntohs(x) htons(x)
+        #define ntohl(x) htonl(x)
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+        #define htons(x) (x)
+        #define htonl(x) (x)
+        #define ntohs(x) (x)
+        #define ntohl(x) (x)
+#else
+        #error byte order problem
+#endif  /* BYTE_ORDER */
+
+#define SOCKET_READ(A,B,C)      readParticle(A,B,C)
+#define SOCKET_WRITE(A,B,C)     writeParticle(A,B,C)
+#define SOCKET_CLOSE(A)         closeParticle(A)
+#define TTY_FLUSH()
+
+#endif  /* Not WIN32 AND Not PARTICLE */
 
 /* some functions to mutate the way these work */
 EXP_FUNC int STDCALL ax_open(const char *pathname, int flags); 

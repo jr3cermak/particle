@@ -62,9 +62,23 @@ Utilizing existing defines:
 
 Creating new defines:
 
+NOTE: If you attempt to use other items not in the available list
+below, unpredicatable results may occur.   You have been warned!
+
 * CONFIG_PLATFORM_PARTICLE
-* CONFIG_DEBUG_USBSERIALLOG <appname>
-* CONFIG_DEBUG_SERIAL <baud>
+* CONFIG_DEBUG_MODE <type>
+  * `<type>: { DEBUG_MODE_LOGGER, DEBUG_MODE_SERIAL }`
+* CONFIG_DEBUG_LOGGER_NAME <logname>
+* CONFIG_DEBUG_LOGGER_CATEGORY <appname>
+* CONFIG_DEBUG_LOGGER_LEVEL <level>
+  * `<level>: { trace, info, warn, error }`
+* CONFIG_DEBUG_SERIAL
+* CONFIG_DEBUG_SERIAL_PTR tty
+* CONFIG_DEBUG_SERIAL_CLASS <class>
+  * `<class>: { USARTSerial, USBSerial }`
+* CONFIG_DEBUG_SERIAL_SPEED <baud>
+* CONFIG_DEBUG_SERIAL_CHANNEL <device>
+  * `<device> : { Serial, USBSerial1, Serial1, Serial2 }`
 * CONFIG_SSL_CLIENT_ONLY
 
 If you want both client and server, define CONFIG_SSL_ENABLE_CLIENT and !CONFIG_SSL_SERVER_ONLY.
@@ -86,6 +100,59 @@ There are some run-time options:
 * SSL_CONNECT_IN_PARTS
 
 Some of these will only work when CONFIG_DEBUG is also enabled.
+
+# Debugging
+
+The axTLS library is strewn with printf statements that we need to convert to something else.  We will convert
+these to a generic debug_tls() routine that we will patch in using Serial or Logger.
+
+## Logger
+
+If you have these definitions:
+
+```
+#define CONFIG_DEBUG_MODE LOGGER
+#define CONFIG_DEBUG_LOGGER_CATEGORY "axtls"
+#define CONFIG_DEBUG_LOGGER_NAME appLog
+#define CONFIG_DEBUG_LOGGER_LEVEL info
+```
+
+This should be the resulting code with given defines:
+
+```
+// Use primary serial over USB interface for logging output
+// You can watch logging of the Particle device via CLI:
+// $ particle serial monitor --follow
+SerialLogHandler logHandler;
+Logger appLog("axtls");
+```
+
+Code that calls `debug_tls(<format>, ...args...)`,
+should call `appLog.info(<format>, ...args...)`.
+
+## Serial
+
+If you have these definitions:
+
+```
+#define CONFIG_DEBUG_MODE SERIAL
+#define CONFIG_DEBUG_SERIAL_PTR tty
+#define CONFIG_DEBUG_SERIAL_SPEED 9600
+#define CONFIG_DEBUG_SERIAL_CLASS
+#define CONFIG_DEBUG_SERIAL_CHANNEL Serial
+```
+
+This should be the resulting code with given defines:
+
+```
+tty->begin(9600);
+```
+
+Code that calls `debug_tls(<format>, ...args...)`,
+should call `tty->println(<format>, ...args...)`.
+
+We use println as each message passed to the Logger is always just a single line.  This
+is the most compatible format with the Logger.
 
 # Classes
 
