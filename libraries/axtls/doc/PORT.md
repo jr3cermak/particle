@@ -67,4 +67,15 @@ aes.cpp requires a ntohl() function
 Copied routines mainly used for the command line to allow project to
 compile cleanly.  These can be phased out or reimplemented.
 
+## config.h
 
+Using a copy from a basic Linux compile, the following options were changed or added:
+
+* Removed the header warning
+* CHG: #undef CONFIG_PLATFORM_LINUX
+* ADD: #define CONFIG_PLATFORM_PARTICLE 1
+* CHG: #define CONFIG_DEBUG 1
+* CHG: #undef CONFIG_SSL_CTX_MUTEXING
+* ADD: #define CONFIG_SSL_CLIENT_TIMEOUT 5000
+* ADD: #define CONFIG_SSL_CLIENT_RETRY_TIMEOUT 5000
+* ADD: #define CONFIG_SSL_CLIENT_MAX_RETRY 5
