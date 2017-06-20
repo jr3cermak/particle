@@ -2,15 +2,25 @@
 
 # axTLS library notes
 
+This port of the [axTLS](http://axtls.sourceforge.net/) library is based on version 2.1.3 by Cameron Rich.
+
 Use of mutex(threading) is currently disabled.  Threading might be interesting to investigate later.
 
 There is a main SSL_CTX (ssl context) in which several SSL sessions can be created
 and destroyed.  I believe this is mainly for server use where there may be multiple
 connections to clients in which certificates/ciphers used can vary.
 
+## Things to do
+
 In the SSL structure, we should silently replace the int type with the TCPClient
 type.  Each object will have a copy of TCPClient.  In case of the server, it will
 keep all the pointers to those objects in the SSL link list.
+
+There is a base certificate provided in the code for initializing the SSL layer.  We need to
+know how to update it in the future.
+
+There are many many command line functions that are not implemented in this software stack
+at present.  Authentication and alternative certificates, etc.
 
 # Implementation
 
