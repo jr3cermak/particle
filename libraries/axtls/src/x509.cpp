@@ -40,6 +40,9 @@
 #include <time.h>
 #include "os_port.h"
 #include "crypto_misc.h"
+#if defined(CONFIG_DEBUG) && defined(CONFIG_PLATFORM_PARTICLE)
+#include "axtls.h"
+#endif
 
 #ifdef CONFIG_SSL_CERT_VERIFICATION
 static int x509_v3_subject_alt_name(const uint8_t *cert, int offset, 
@@ -80,7 +83,7 @@ int x509_new(const uint8_t *cert, int *len, X509_CTX **ctx)
 {
     int begin_tbs, end_tbs;
     int ret = X509_NOT_OK, offset = 0, cert_size = 0;
-    int version = 0;
+    int32_t version = 0;
     X509_CTX *x509_ctx;
 #ifdef CONFIG_SSL_CERT_VERIFICATION /* only care if doing verification */
     BI_CTX *bi_ctx;
@@ -210,8 +213,13 @@ end_cert:
     if (ret)
     {
 #ifdef CONFIG_SSL_FULL_MODE
+#if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("Error: Invalid X509 ASN.1 file (%s)\n",
                         x509_display_error(ret));
+#else
+        debug_tls("Error: Invalid X509 ASN.1 file (%s)\n",
+                        x509_display_error(ret));
+#endif /* PARTICLE */
 #endif
         x509_free(x509_ctx);
         *ctx = NULL;
@@ -585,6 +593,7 @@ end_verify:
  * Used for diagnostics.
  */
 static const char *not_part_of_cert = "<Not Part Of Certificate>";
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx) 
 {
     if (cert == NULL)
@@ -627,7 +636,7 @@ void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx)
     {
        //printf("Basic Constraints:\t\t%sCA:%s, pathlen:%d\n",
                 cert->basic_constraint_is_critical ? 
-                    "critical, " : "",
+                    "critical, " : "\n",
                 cert->basic_constraint_cA? "TRUE" : "FALSE",
                 cert->basic_constraint_pathLenConstraint);
     }
@@ -814,6 +823,237 @@ void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx)
 
     TTY_FLUSH();
 }
+#else /* PARTICLE */
+void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx) 
+{
+    if (cert == NULL)
+        return;
+
+    debug_tls("=== CERTIFICATE ISSUED TO ===");
+    debug_tls("Common Name (CN):\t\t");
+    debug_tls("%s", cert->cert_dn[X509_COMMON_NAME] ?
+                    cert->cert_dn[X509_COMMON_NAME] : not_part_of_cert);
+
+    debug_tls("Organization (O):\t\t");
+    debug_tls("%s", cert->cert_dn[X509_ORGANIZATION] ?
+        cert->cert_dn[X509_ORGANIZATION] : not_part_of_cert);
+
+    if (cert->cert_dn[X509_ORGANIZATIONAL_UNIT]) 
+    {
+        debug_tls("Organizational Unit (OU):\t");
+        debug_tls("%s", cert->cert_dn[X509_ORGANIZATIONAL_UNIT]);
+    }
+
+    if (cert->cert_dn[X509_LOCATION]) 
+    {
+        debug_tls("Location (L):\t\t\t");
+        debug_tls("%s", cert->cert_dn[X509_LOCATION]);
+    }
+
+    if (cert->cert_dn[X509_COUNTRY]) 
+    {
+        debug_tls("Country (C):\t\t\t");
+        debug_tls("%s", cert->cert_dn[X509_COUNTRY]);
+    }
+
+    if (cert->cert_dn[X509_STATE]) 
+    {
+        debug_tls("State (ST):\t\t\t");
+        debug_tls("%s", cert->cert_dn[X509_STATE]);
+    }
+
+    if (cert->basic_constraint_present)
+    {
+        debug_tls("Basic Constraints:\t\t%sCA:%s, pathlen:%ld",
+                cert->basic_constraint_is_critical ? 
+                    "critical, " : "not critial,",
+                cert->basic_constraint_cA? "TRUE" : "FALSE",
+                cert->basic_constraint_pathLenConstraint);
+    }
+
+    if (cert->key_usage_present)
+    {
+        debug_tls("Key Usage:\t\t\t%s", cert->key_usage_is_critical ? 
+                    "critical, " : "");
+        bool has_started = false;
+
+        if (IS_SET_KEY_USAGE_FLAG(cert, KEY_USAGE_DIGITAL_SIGNATURE))
+        {
+            debug_tls("Digital Signature");
+            has_started = true;
+        }
+
+        if (IS_SET_KEY_USAGE_FLAG(cert, KEY_USAGE_NON_REPUDIATION))
+        {
+            if (has_started)
+                debug_tls(", ");
+
+            debug_tls("Non Repudiation");
+            has_started = true;
+        }
+
+        if (IS_SET_KEY_USAGE_FLAG(cert, KEY_USAGE_KEY_ENCIPHERMENT))
+        {
+            if (has_started)
+                debug_tls(", ");
+
+            debug_tls("Key Encipherment");
+            has_started = true;
+        }
+        
+        if (IS_SET_KEY_USAGE_FLAG(cert, KEY_USAGE_DATA_ENCIPHERMENT))
+        {
+            if (has_started)
+                debug_tls(", ");
+
+            debug_tls("Data Encipherment");
+            has_started = true;
+        }
+
+        if (IS_SET_KEY_USAGE_FLAG(cert, KEY_USAGE_KEY_AGREEMENT))
+        {
+            if (has_started)
+                debug_tls(", ");
+
+            debug_tls("Key Agreement");
+            has_started = true;
+        }
+
+        if (IS_SET_KEY_USAGE_FLAG(cert, KEY_USAGE_KEY_CERT_SIGN))
+        {
+            if (has_started)
+                debug_tls(", ");
+
+            debug_tls("Key Cert Sign");
+            has_started = true;
+        }
+
+        if (IS_SET_KEY_USAGE_FLAG(cert, KEY_USAGE_CRL_SIGN))
+        {
+            if (has_started)
+                debug_tls(", ");
+
+            debug_tls("CRL Sign");
+            has_started = true;
+        }
+       
+        if (IS_SET_KEY_USAGE_FLAG(cert, KEY_USAGE_ENCIPHER_ONLY))
+        {
+            if (has_started)
+                debug_tls(", ");
+
+            debug_tls("Encipher Only");
+            has_started = true;
+        }
+
+        if (IS_SET_KEY_USAGE_FLAG(cert, KEY_USAGE_DECIPHER_ONLY))
+        {
+            if (has_started)
+                debug_tls(", ");
+
+            debug_tls("Decipher Only");
+            has_started = true;
+        }
+
+        debug_tls("-");
+    }
+
+    if (cert->subject_alt_name_present)
+    {
+        debug_tls("Subject Alt Name:\t\t%s", cert->subject_alt_name_is_critical 
+                ?  "critical, " : "");
+        if (cert->subject_alt_dnsnames)
+        {
+            int i = 0;
+
+            while (cert->subject_alt_dnsnames[i])
+                debug_tls("%s ", cert->subject_alt_dnsnames[i++]);
+        }
+        debug_tls("-");
+
+    }
+
+    debug_tls("=== CERTIFICATE ISSUED BY ===");
+    debug_tls("Common Name (CN):\t\t");
+    debug_tls("%s", cert->ca_cert_dn[X509_COMMON_NAME] ?
+                    cert->ca_cert_dn[X509_COMMON_NAME] : not_part_of_cert);
+
+    debug_tls("Organization (O):\t\t");
+    debug_tls("%s", cert->ca_cert_dn[X509_ORGANIZATION] ?
+        cert->ca_cert_dn[X509_ORGANIZATION] : not_part_of_cert);
+
+    if (cert->ca_cert_dn[X509_ORGANIZATIONAL_UNIT]) 
+    {
+        debug_tls("Organizational Unit (OU):\t");
+        debug_tls("%s", cert->ca_cert_dn[X509_ORGANIZATIONAL_UNIT]);
+    }
+
+    if (cert->ca_cert_dn[X509_LOCATION]) 
+    {
+        debug_tls("Location (L):\t\t\t");
+        debug_tls("%s", cert->ca_cert_dn[X509_LOCATION]);
+    }
+
+    if (cert->ca_cert_dn[X509_COUNTRY]) 
+    {
+        debug_tls("Country (C):\t\t\t");
+        debug_tls("%s", cert->ca_cert_dn[X509_COUNTRY]);
+    }
+
+    if (cert->ca_cert_dn[X509_STATE]) 
+    {
+        debug_tls("State (ST):\t\t\t");
+        debug_tls("%s", cert->ca_cert_dn[X509_STATE]);
+    }
+
+    debug_tls("Not Before:\t\t\t%s", ctime(&cert->not_before));
+    debug_tls("Not After:\t\t\t%s", ctime(&cert->not_after));
+    debug_tls("RSA bitsize:\t\t\t%d", cert->rsa_ctx->num_octets*8);
+    debug_tls("Sig Type:\t\t\t");
+    switch (cert->sig_type)
+    {
+        case SIG_TYPE_MD5:
+            debug_tls("MD5");
+            break;
+        case SIG_TYPE_SHA1:
+            debug_tls("SHA1");
+            break;
+        case SIG_TYPE_SHA256:
+            debug_tls("SHA256");
+            break;
+        case SIG_TYPE_SHA384:
+            debug_tls("SHA384");
+            break;
+        case SIG_TYPE_SHA512:
+            debug_tls("SHA512");
+            break;
+        default:
+            debug_tls("Unrecognized: %d", cert->sig_type);
+            break;
+    }
+
+    if (ca_cert_ctx)
+    {
+        int pathLenConstraint = 0;
+        debug_tls("Verify:\t\t\t\t%s",
+                x509_display_error(x509_verify(ca_cert_ctx, cert,
+                        &pathLenConstraint)));
+    }
+
+#if 0
+    print_blob("Signature", cert->signature, cert->sig_len);
+    bi_print("Modulus", cert->rsa_ctx->m);
+    bi_print("Pub Exp", cert->rsa_ctx->e);
+#endif
+
+    if (ca_cert_ctx)
+    {
+        x509_print(cert->next, ca_cert_ctx);
+    }
+
+    TTY_FLUSH();
+}
+#endif /* PARTICLE */
 
 const char * x509_display_error(int error)
 {

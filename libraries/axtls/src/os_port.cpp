@@ -39,6 +39,15 @@
 #include <stdarg.h>
 #include "os_port.h"
 
+#ifdef CONFIG_PLATFORM_PARTICLE
+EXP_FUNC void STDCALL gettimeofday(struct timeval* t, void* timezone)
+{       
+  uint32_t hal_t = HAL_Timer_Milliseconds();  // get uptime in nanoseconds
+  t->tv_sec = hal_t / 1000; // convert to seconds
+  t->tv_usec = ( hal_t % 1000 ) * 1000;  // get remaining microseconds
+}
+#endif
+
 #ifdef WIN32
 /**
  * gettimeofday() not in Win32 

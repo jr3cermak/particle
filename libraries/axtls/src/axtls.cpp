@@ -2,10 +2,24 @@
  */
 
 #include "axtls.h"
+
 #if defined(CONFIG_DEBUG) && defined(CONFIG_PLATFORM_PARTICLE)
-#include "axtls_logging.h"
-#endif
-#endif
+
+#if CONFIG_DEBUG_MODE == DEBUG_MODE_LOGGER
+
+CONFIG_DEBUG_LOGGER_LIBRARY *outData =
+  new CONFIG_DEBUG_LOGGER_LIBRARY(CONFIG_DEBUG_LOGGER_CATEGORY);
+
+#endif /* LOGGER */
+
+#if CONFIG_DEBUG_MODE == DEBUG_MODE_SERIAL
+
+Serial *outData = new Serial();
+
+#endif /* SERIAL */
+
+#endif /* CONFIG_DEBUG */
+
 
 /**
  * Constructor.
@@ -21,7 +35,8 @@ Axtls::Axtls()
 void Axtls::begin()
 {
     // initialize hardware
-    Serial.println("called begin");
+    //Serial.println("called begin");
+    debug_tls("called begin");
 }
 
 /**

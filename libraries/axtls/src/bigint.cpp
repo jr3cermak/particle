@@ -68,7 +68,7 @@
 #include "os_port.h"
 #include "bigint.h"
 #if defined(CONFIG_DEBUG) && defined(CONFIG_PLATFORM_PARTICLE)
-#include "axtls_logging.h"
+#include "axtls.h"
 #endif
 
 #define V1      v->comps[v->size-1]                 /**< v1 for division */

@@ -9,9 +9,14 @@
  */
 #define PREFIX "/usr/local"
 #define CONFIG_DEBUG 1
+/*
+ * If you turn on CONFIG_DEBUG, see axtls_logging.h, to
+ * configure Serial or Logging behavior.
+ */
 #define DEBUG_MODE_LOGGER 1
 #define DEBUG_MODE_SERIAL 2
 #define CONFIG_DEBUG_MODE DEBUG_MODE_LOGGER
+#define CONFIG_DEBUG_LOGGER_LIBRARY Logger
 #define CONFIG_DEBUG_LOGGER_CATEGORY "axtls"
 #define CONFIG_DEBUG_LOGGER_NAME appLog
 #define CONFIG_DEBUG_LOGGER_LEVEL info

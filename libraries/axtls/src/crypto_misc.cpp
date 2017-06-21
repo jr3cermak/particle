@@ -43,7 +43,9 @@
 #endif
 
 #ifndef WIN32
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 static int rng_fd = -1;
+#endif /* Not PARTICLE */
 #elif defined(CONFIG_WIN32_USE_CRYPTO_LIB)
 static HCRYPTPROV gCryptProv;
 #endif
@@ -147,7 +149,9 @@ EXP_FUNC void STDCALL RNG_custom_init(const uint8_t *seed_buf, int size)
 EXP_FUNC void STDCALL RNG_terminate(void)
 {
 #ifndef WIN32
+#if !defined(CONFIG_PLATFORM_PARTICLE)
     close(rng_fd);
+#endif
 #elif defined(CONFIG_WIN32_USE_CRYPTO_LIB)
     CryptReleaseContext(gCryptProv, 0);
 #endif

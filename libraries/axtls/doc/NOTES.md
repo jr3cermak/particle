@@ -34,6 +34,9 @@ code out and slowly bring code/functions back into operation.  If you include
 one function call at a time, you will slowly find the offending code that uses
 <stdio.h> functions that should be avoided.
 
+Other things to avoid are gettimeofday via sys/time.h.  This will pull in a symbol
+gettimeofday that cannot be used with the Particle platform.
+
 There are some reserved words and variables imported via "Particle.h" or
 "application.h" that needed to be avoided.
 
@@ -104,7 +107,8 @@ Some of these will only work when CONFIG_DEBUG is also enabled.
 # Debugging
 
 The axTLS library is strewn with printf statements that we need to convert to something else.  We will convert
-these to a generic debug_tls() routine that we will patch in using Serial or Logger.
+these to a generic debug_tls() routine that we will patch in using Serial or Logger via type defined pointe
+see config.h and axtls.h.
 
 ## Logger
 
@@ -181,7 +185,8 @@ axtlsServer
 Members:
 
 NOTE: Development of the server portion is not planned until later or until a volunteer can
-be found to take on the development/porting of that section of code.
+be found to take on the development/porting of that section of code.  The general porting
+has been completed.
 
 * available()
 * begin()

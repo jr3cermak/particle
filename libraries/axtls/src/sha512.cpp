@@ -31,6 +31,10 @@
 #include <string.h>
 #include "os_port.h"
 #include "crypto.h"
+#if defined(CONFIG_PLATFORM_PARTICLE)
+/* Implement be64toh() */
+#include "byteorder.h"
+#endif
  
 #define SHR64(a, n) ((a) >> (n))
 #define ROR64(a, n) (((a) >> (n)) | ((a) << (64 - (n))))

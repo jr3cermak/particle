@@ -63,8 +63,13 @@ static int send_cert_verify(SSL *ssl);
 /*
  * Establish a new SSL connection to an SSL server.
  */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 EXP_FUNC SSL * STDCALL ssl_client_new(SSL_CTX *ssl_ctx, int client_fd, const
         uint8_t *session_id, uint8_t sess_id_size, SSL_EXTENSIONS* ssl_ext)
+#else
+EXP_FUNC SSL * STDCALL ssl_client_new(SSL_CTX *ssl_ctx, SSL *client_fd, const
+        uint8_t *session_id, uint8_t sess_id_size, SSL_EXTENSIONS* ssl_ext)
+#endif
 {
     SSL *ssl = ssl_new(ssl_ctx, client_fd);
     ssl->version = SSL_PROTOCOL_VERSION_MAX; /* try top version first */

@@ -54,7 +54,11 @@ static int process_cert_verify(SSL *ssl);
 /*
  * Establish a new SSL connection to an SSL client.
  */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 EXP_FUNC SSL * STDCALL ssl_server_new(SSL_CTX *ssl_ctx, int client_fd)
+#else
+EXP_FUNC SSL * STDCALL ssl_server_new(SSL_CTX *ssl_ctx, SSL *client_fd)
+#endif
 {
     SSL *ssl;
 

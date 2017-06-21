@@ -1,6 +1,7 @@
 # Porting axTLS v2.1.3 to Particle
 
-These are specific notes about source code changes and justifications if possible.
+These are specific notes about source code changes and justifications
+if possible.
 
 See NOTES.md for design discussion.
 
@@ -12,8 +13,8 @@ Any specialized tools are in the bin directory.
 
 ### mklibAxTls
 
-This script will operate from the axTLS source tree in its native form.  You need to
-define several locations:
+This script will operate from the axTLS source tree in its native form.
+You need to define several locations:
 
 * `${PARTICLE_PROJECT_DIR}`: root library directory destination, not the library
 * `${SRC}`: root of the axTLS source tree
@@ -63,16 +64,44 @@ aes.cpp requires a ntohl() function
 
 # Newly created content
 
-## axtls_logging.h
+# Source files (modified)
 
-See design notes for implementation details.  Logger does not need to be defined
-as extern as Particle does that through "application.h".
+## tls1_svr.cpp
 
-# Source files
+* ssl_server_new() client_fd (int) -> (SSL *)
+
+## asn1.cpp
+
+* Add extern "C" {}
+* asn1_version() 3rd argument (int) -> (int32_t)
+
+## tls1_clnt.cpp
+
+* ssl_client_new() (int) -> (SSL *) for client_fd
+
+## crypto_misc.h
+
+* Change: int32_t basic_constraint_pathLenConstraint;
+* prototype asn1_version() 3rd argument (int) -> (int32_t)
+
+## p12.cpp
+
+* returned pointer from malloc needs a cast to (uint8_t*)
+
+## x509.cpp
+
+* Add `#include "axtls.h"` to the top if CONFIG_DEBUG && CONFIG_PLATFORM_PARTICLE is defined.
+  * TODO: There are some disjointed lines in x509_print()
+* Fix up more printf statements
+* Change references of (int*) to (int32_t*) for basic_constraint_pathLenContraint
+  * Definition in crypto_misc.h
+* Reimplement gettimeofday -> gettimeofdayParticle()
+* We might have problems with ctime()
+* x509_new() version (int) -> (int32_t)
 
 ## bigint.cpp
 
-* Add `#include "axtls_logging.h"` to the top if CONFIG_DEBUG && CONFIG_PLATFORM_PARTICLE is defined.
+* Add `#include "axtls.h"` to the top if CONFIG_DEBUG && CONFIG_PLATFORM_PARTICLE is defined.
 * Fix up printf statements that span multiple lines.
 * There is a small section to fix up in bi_print().   
 
@@ -92,21 +121,25 @@ a pointer back to the SSL structure.  This avoids messing with SOCKET_READ() and
 
 * The bulk commenting out of printf has side effects.  Any multiline printf statements
 cause errors.  We will rewrite these now.
-* Begin layering in logging support to SerialUsb and plain Serial. 
-* Add `#include "axtls_logging.h"` to the top if CONFIG_DEBUG && CONFIG_PLATFORM_PARTICLE is defined.
+* Add `#include "axtls.h"` to the top if CONFIG_DEBUG && CONFIG_PLATFORM_PARTICLE is defined.
 * Add Particle specific routines for I/O with TCPClient using function callbacks.
 * send_raw_packet(); rework file descriptor use
 * send_packet(); alloca needs a cast on the return pointer
 
 ## aes.cpp
 
-* Reserved word `xor` used; renamed to 'txor' in #define copy of code
+* Reserved word `xor` used; renamed to `txor` in #define copy of code
+
+## os_port.cpp
+
+* Implement gettimeofday
 
 ## os_port.h
 
 * Include ntohl() patch
 * Avoid unnecessary #include, particular failure was <netdb.h>
 * Need to define SOCKET_WRITE, SOCKET_READ and SOCKET_CLOSE
+* Implement gettimeofday
 
 ```
 #define SOCKET_READ(A,B,C)      readParticle(A,B,C)

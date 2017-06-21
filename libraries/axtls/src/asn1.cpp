@@ -32,6 +32,10 @@
  * Some primitive asn methods for extraction ASN.1 data.
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -389,7 +393,7 @@ static int asn1_get_utc_time(const uint8_t *buf, int *offset, time_t *t)
 /**
  * Get the version type of a certificate
  */
-int asn1_version(const uint8_t *cert, int *offset, int *val)
+int asn1_version(const uint8_t *cert, int *offset, int32_t *val)
 {
     (*offset) += 2;        /* get past explicit tag */
     return asn1_get_int(cert, offset, val);
@@ -774,3 +778,6 @@ end_check_sig:
     return ret;
 }
 
+#ifdef __cplusplus
+}
+#endif

@@ -149,6 +149,18 @@ EXP_FUNC int STDCALL getdomainname(char *buf, int buf_size);
 
 #else /* PARTICLE */
 
+/* Use of Particle time */
+#include "timer_hal.h"
+
+/* We need to avoid sys/time.h which means we have to specify the timeval
+   structure */
+typedef struct timeval {
+  long tv_sec;
+  long tv_usec;
+} timeval;
+
+EXP_FUNC void STDCALL gettimeofday(struct timeval* t,void* timezone);
+
 /**
  * @file       BlynkProtocolDefs.h
  * @author     Volodymyr Shymanskyy

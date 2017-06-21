@@ -283,7 +283,7 @@ int pkcs12_decode(SSL_CTX *ssl_ctx, SSLObjLoader *ssl_obj, const char *password)
         goto error;
 
     auth_safes_len = auth_safes_end - auth_safes_start;
-    auth_safes = malloc(auth_safes_len);
+    auth_safes = (uint8_t *)malloc(auth_safes_len);
 
     memcpy(auth_safes, &buf[auth_safes_start], auth_safes_len);
 

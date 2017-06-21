@@ -39,7 +39,7 @@
 #include "os_port.h"
 #include "ssl.h"
 #if defined(CONFIG_DEBUG) && defined(CONFIG_PLATFORM_PARTICLE)
-#include "axtls_logging.h"
+#include "axtls.h"
 #endif
 
 /* The session expiry time */

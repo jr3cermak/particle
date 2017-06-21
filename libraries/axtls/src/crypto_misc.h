@@ -104,7 +104,7 @@ struct _x509_ctx
     bool subject_alt_name_present;
     bool subject_alt_name_is_critical;
     bool basic_constraint_cA;
-    int basic_constraint_pathLenConstraint;
+    int32_t basic_constraint_pathLenConstraint;
     uint32_t key_usage;
     struct _x509_ctx *next;
 };
@@ -169,7 +169,7 @@ int asn1_get_big_int(const uint8_t *buf, int *offset, uint8_t **object);
 int asn1_get_int(const uint8_t *buf, int *offset, int32_t *val);
 int asn1_get_bool(const uint8_t *buf, int *offset, bool *val);
 int asn1_get_bit_string_as_int(const uint8_t *buf, int *offset, uint32_t *val);
-int asn1_version(const uint8_t *cert, int *offset, int *val);
+int asn1_version(const uint8_t *cert, int *offset, int32_t *val);
 int asn1_validity(const uint8_t *cert, int *offset, X509_CTX *x509_ctx);
 int asn1_name(const uint8_t *cert, int *offset, char *dn[]);
 int asn1_public_key(const uint8_t *cert, int *offset, X509_CTX *x509_ctx);
