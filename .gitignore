@@ -3,3 +3,4 @@ private.h
 *.bin
 *.tmp
 *.swp
+err.txt
