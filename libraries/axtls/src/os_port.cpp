@@ -40,12 +40,27 @@
 #include "os_port.h"
 
 #ifdef CONFIG_PLATFORM_PARTICLE
+#include "Particle.h"
 EXP_FUNC void STDCALL gettimeofday(struct timeval* t, void* timezone)
 {       
   uint32_t hal_t = HAL_Timer_Milliseconds();  // get uptime in nanoseconds
   t->tv_sec = hal_t / 1000; // convert to seconds
   t->tv_usec = ( hal_t % 1000 ) * 1000;  // get remaining microseconds
 }
+
+/*
+void debugger_callback(const char* fmt, ...) {
+  char tmp[80];
+  va_list(ap);
+  va_start(ap, fmt);
+  vsnprintf(tmp, 80, fmt, ap);
+
+  //Serial.print(tmp);
+  myLog.info(tmp);
+
+  va_end(ap);
+}
+*/
 #endif
 
 #ifdef WIN32

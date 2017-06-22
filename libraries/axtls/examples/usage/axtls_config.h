@@ -1,3 +1,11 @@
+#ifndef HEADER_AXTLS_CONFIG_H
+#define HEADER_AXTLS_CONFIG_H
+
+/**
+ * NOTE: This config file must be at the top of your project
+ * so compile time options can be changed on the fly.
+ */
+
 #define HAVE_DOT_CONFIG 1
 #undef CONFIG_PLATFORM_LINUX
 #undef CONFIG_PLATFORM_CYGWIN
@@ -8,18 +16,7 @@
  * General Configuration
  */
 #define PREFIX "/usr/local"
-#define CONFIG_DEBUG 1
-/*
- * If you turn on CONFIG_DEBUG, see axtls_logging.h, to
- * configure Serial or Logging behavior.
- */
-#define DEBUG_MODE_LOGGER 1
-#define DEBUG_MODE_SERIAL 2
-#define CONFIG_DEBUG_MODE DEBUG_MODE_LOGGER
-#define CONFIG_DEBUG_LOGGER_LIBRARY Logger
-#define CONFIG_DEBUG_LOGGER_CATEGORY "axtls"
-#define CONFIG_DEBUG_LOGGER_NAME appLog
-#define CONFIG_DEBUG_LOGGER_LEVEL info
+#undef CONFIG_DEBUG
 #define CONFIG_STRIP_UNWANTED_SECTIONS 1
 #undef CONFIG_VISUAL_STUDIO_7_0
 #undef CONFIG_VISUAL_STUDIO_8_0
@@ -135,3 +132,5 @@
 #define CONFIG_INTEGER_32BIT 1
 #undef CONFIG_INTEGER_16BIT
 #undef CONFIG_INTEGER_8BIT
+
+#endif

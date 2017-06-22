@@ -42,7 +42,7 @@ extern "C" {
 #endif
 
 #include "os_int.h"
-#include "config.h"
+#include "axtls_config.h"
 #include <stdio.h>
 
 #if defined(WIN32)
@@ -160,6 +160,8 @@ typedef struct timeval {
 } timeval;
 
 EXP_FUNC void STDCALL gettimeofday(struct timeval* t,void* timezone);
+
+void debugger_callback(const char* fmt, ...);
 
 /**
  * @file       BlynkProtocolDefs.h

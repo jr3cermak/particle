@@ -28,8 +28,8 @@ What this script does in a nutshell:
 * Custom code from `${ORG}` is copied.
   * c files are renamed on the fly to cpp
   * Particle class files should be named .c
-* If you have made customized changes to original code, the script checks for an original file and a
-modified file.  It will recompute the diff.
+* If you have made customized changes to original code, the script
+checks for an original file and a modified file.  It will recompute the diff.
 * Any patch files are then applied to the library.
 * Any bulk operations are then performed.
   * `printf -> //printf`
@@ -119,12 +119,13 @@ a pointer back to the SSL structure.  This avoids messing with SOCKET_READ() and
 
 ## tls1.cpp
 
-* The bulk commenting out of printf has side effects.  Any multiline printf statements
-cause errors.  We will rewrite these now.
+* The bulk commenting out of printf has side effects.  Any multiline printf
+statements cause errors.  We will rewrite these now.
 * Add `#include "axtls.h"` to the top if CONFIG_DEBUG && CONFIG_PLATFORM_PARTICLE is defined.
 * Add Particle specific routines for I/O with TCPClient using function callbacks.
 * send_raw_packet(); rework file descriptor use
 * send_packet(); alloca needs a cast on the return pointer
+* errno and friends are got undefined somehow? It compiled before.
 
 ## aes.cpp
 

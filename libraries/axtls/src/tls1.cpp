@@ -361,9 +361,11 @@ int add_cert(SSL_CTX *ssl_ctx, const uint8_t *buf, int len)
                 "compile-time configuration required\n",
                 CONFIG_SSL_MAX_CERTS);
 #else
+#ifdef CONFIG_DEBUG
         debug_tls("Error: maximum number of certs added (%d) - change of "
-                "compile-time configuration required",
+                "compile-time configuration required\n",
                 CONFIG_SSL_MAX_CERTS);
+#endif
 #endif /* PARTICLE */
 #endif
         goto error;
@@ -445,9 +447,11 @@ int add_cert_auth(SSL_CTX *ssl_ctx, const uint8_t *buf, int len)
                     "compile-time configuration required\n", 
                     CONFIG_X509_MAX_CA_CERTS);
 #else
+#ifdef CONFIG_DEBUG
             debug_tls("Error: maximum number of CA certs added (%d) - change of "
-                    "compile-time configuration required", 
+                    "compile-time configuration required\n", 
                     CONFIG_X509_MAX_CA_CERTS);
+#endif
 #endif /* PARTICLE */
 #endif
             ret = X509_MAX_CERTS;
@@ -1095,7 +1099,9 @@ static int send_raw_packet(SSL *ssl, uint8_t protocol)
 #ifdef WIN32
             if (GetLastError() != WSAEWOULDBLOCK)
 #else
+#if !defined(CONFIG_PLATFORM_PARTICLE)
             if (errno != EAGAIN && errno != EWOULDBLOCK)
+#endif
 #endif
                 return SSL_ERROR_CONN_LOST;
         }
@@ -1337,7 +1343,9 @@ int basic_read(SSL *ssl, uint8_t **in_data)
 #ifdef WIN32
         if (GetLastError() == WSAEWOULDBLOCK)
 #else
+#if !defined(CONFIG_PLATFORM_PARTICLE)
         if (errno == EAGAIN || errno == EWOULDBLOCK)
+#endif
 #endif
             return 0;
     }
@@ -1793,7 +1801,10 @@ void disposable_free(SSL *ssl)
  * Setup function callbacks to read()/f_recv and write()/f_send functions to work with TCPClient.
  */
 void set_io_callbacks(SSL_CTX *ssl_ctx, axtls_ssl_send_t *f_send, axtls_ssl_recv_t *f_recv) {
-  debug_tls("Assigning function callbacks ssl_ctx(%p) f_send(%p) f_recv(%p)", ssl_ctx, f_send, f_recv);
+#ifdef CONFIG_DEBUG
+  debug_tls("Assigning function callbacks ssl_ctx(%p) f_send(%p) f_recv(%p)\n",
+    ssl_ctx, f_send, f_recv);
+#endif
   ssl_ctx->f_send = f_send;
   ssl_ctx->f_recv = f_recv;
 }
@@ -1809,7 +1820,10 @@ int writeParticle(SSL *ssl, uint8_t *rec_buf, int sz_buf) {
   SSL *real_ssl = (SSL *) ssl;
   SSL_CTX *ssl_ctx = real_ssl->ssl_ctx;
 
-  debug_tls("writeParticle() ssl(%p) ssl_ctx(%p) f_send(%p)",ssl,ssl_ctx,ssl_ctx->f_send);
+#ifdef CONFIG_DEBUG
+  debug_tls("writeParticle() ssl(%p) ssl_ctx(%p) f_send(%p)\n",
+    ssl, ssl_ctx, ssl_ctx->f_send);
+#endif
   nbytes = ssl_ctx->f_send(ssl, rec_buf, sz_buf);
   return nbytes;
 }
@@ -1825,7 +1839,10 @@ int readParticle(SSL *ssl, uint8_t *rec_buf, int sz_buf) {
   SSL *real_ssl = (SSL *) ssl;
   SSL_CTX *ssl_ctx = real_ssl->ssl_ctx;
 
-  debug_tls("readParticle() ssl(%p) ssl_ctx(%p) f_recv(%p)",ssl,ssl_ctx,ssl_ctx->f_send);
+#ifdef CONFIG_DEBUG
+  debug_tls("readParticle() ssl(%p) ssl_ctx(%p) f_recv(%p)\n",
+    ssl, ssl_ctx, ssl_ctx->f_send);
+#endif
   nbytes = ssl_ctx->f_recv(ssl, rec_buf, sz_buf);
   return nbytes;
 }

@@ -41,7 +41,7 @@ extern "C" {
 #endif
 
 #include "version.h"
-#include "config.h"
+#include "axtls_config.h"
 #include "os_int.h"
 #include "os_port.h"
 #include "crypto.h"

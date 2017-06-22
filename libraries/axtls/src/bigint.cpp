@@ -130,8 +130,10 @@ void bi_terminate(BI_CTX *ctx)
        //printf("bi_terminate: there were %d un-freed bigints\n",
                        ctx->active_count);
 #else
-        debug_tls("bi_terminate: there were %d un-freed bigints",
+#ifdef CONFIG_DEBUG
+        debug_tls("bi_terminate: there were %d un-freed bigints\n",
                        ctx->active_count);
+#endif
 #endif /* PARTICLE */
 #endif
         abort();
@@ -191,7 +193,9 @@ void bi_permanent(bigint *bi)
 #if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("bi_permanent: refs was not 1\n");
 #else
-        debug_tls("bi_permanent: refs was not 1");
+#ifdef CONFIG_DEBUG
+        debug_tls("bi_permanent: refs was not 1\n");
+#endif
 #endif /* PARTICLE */
 #endif
         abort();
@@ -213,7 +217,9 @@ void bi_depermanent(bigint *bi)
 #if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("bi_depermanent: bigint was not permanent\n");
 #else
-        debug_tls("bi_depermanent: bigint was not permanent");
+#ifdef CONFIG_DEBUG
+        debug_tls("bi_depermanent: bigint was not permanent\n");
+#endif
 #endif /* PARTICLE */
 #endif
         abort();
@@ -253,8 +259,10 @@ void bi_free(BI_CTX *ctx, bigint *bi)
        //printf("bi_free: active_count went negative "
                 "- double-freed bigint?\n");
 #else
+#ifdef CONFIG_DEBUG
         debug_tls("bi_free: active_count went negative "
-                "- double-freed bigint?");
+                "- double-freed bigint?\n");
+#endif
 #endif /* PARTICLE */
 #endif
         abort();
@@ -701,7 +709,9 @@ void bi_print(const char *label, bigint *x)
 #if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("%s: (null)\n", label);
 #else
+#ifdef CONFIG_DEBUG
         debug_tls("%s: (null)", label);
+#endif
 #endif /* PARTICLE */
         return;
     }
@@ -709,7 +719,9 @@ void bi_print(const char *label, bigint *x)
 #if !defined(CONFIG_PLATFORM_PARTICLE)
    //printf("%s: (size %d)\n", label, x->size);
 #else
+#ifdef CONFIG_DEBUG
     debug_tls("%s: (size %d)", label, x->size);
+#endif
 #endif /* PARTICLE */
 #if !defined(CONFIG_PLATFORM_PARTICLE)
     for (i = x->size-1; i >= 0; i--)
@@ -1132,7 +1144,9 @@ static bigint *alloc(BI_CTX *ctx, int size)
 #if !defined(CONFIG_PLATFORM_PARTICLE)
            //printf("alloc: refs was not 0\n");
 #else
+#ifdef CONFIG_DEBUG
             debug_tls("alloc: refs was not 0");
+#endif
 #endif /* PARTICLE */
 #endif
             abort();    /* create a stack trace from a core dump */
@@ -1212,7 +1226,9 @@ static void check(const bigint *bi)
 #if !defined(CONFIG_PLATFORM_PARTICLE)
        //printf("check: zero or negative refs in bigint\n");
 #else
+#ifdef CONFIG_DEBUG
         debug_tls("check: zero or negative refs in bigint");
+#endif
 #endif /* PARTICLE */
         abort();
     }
@@ -1223,8 +1239,10 @@ static void check(const bigint *bi)
        //printf("check: attempt to use a bigint from "
                 "the free list\n");
 #else
+#ifdef CONFIG_DEBUG
         debug_tls("check: attempt to use a bigint from "
                 "the free list");
+#endif
 #endif /* PARTICLE */
         abort();
     }

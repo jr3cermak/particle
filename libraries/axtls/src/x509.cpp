@@ -217,8 +217,10 @@ end_cert:
        //printf("Error: Invalid X509 ASN.1 file (%s)\n",
                         x509_display_error(ret));
 #else
+#ifdef CONFIG_DEBUG
         debug_tls("Error: Invalid X509 ASN.1 file (%s)\n",
                         x509_display_error(ret));
+#endif
 #endif /* PARTICLE */
 #endif
         x509_free(x509_ctx);
@@ -724,7 +726,6 @@ void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx)
            //printf("Decipher Only");
             has_started = true;
         }
-
        //printf("\n");
     }
 
@@ -829,7 +830,8 @@ void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx)
     if (cert == NULL)
         return;
 
-    debug_tls("=== CERTIFICATE ISSUED TO ===");
+#ifdef CONFIG_DEBUG
+    debug_tls("=== CERTIFICATE ISSUED TO ===\n");
     debug_tls("Common Name (CN):\t\t");
     debug_tls("%s", cert->cert_dn[X509_COMMON_NAME] ?
                     cert->cert_dn[X509_COMMON_NAME] : not_part_of_cert);
@@ -864,9 +866,9 @@ void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx)
 
     if (cert->basic_constraint_present)
     {
-        debug_tls("Basic Constraints:\t\t%sCA:%s, pathlen:%ld",
+        debug_tls("Basic Constraints:\t\t%sCA:%s, pathlen:%ld\n",
                 cert->basic_constraint_is_critical ? 
-                    "critical, " : "not critial,",
+                    "critical, " : "\n",
                 cert->basic_constraint_cA? "TRUE" : "FALSE",
                 cert->basic_constraint_pathLenConstraint);
     }
@@ -954,8 +956,7 @@ void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx)
             debug_tls("Decipher Only");
             has_started = true;
         }
-
-        debug_tls("-");
+        debug_tls("\n");
     }
 
     if (cert->subject_alt_name_present)
@@ -969,11 +970,11 @@ void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx)
             while (cert->subject_alt_dnsnames[i])
                 debug_tls("%s ", cert->subject_alt_dnsnames[i++]);
         }
-        debug_tls("-");
+        debug_tls("\n");
 
     }
 
-    debug_tls("=== CERTIFICATE ISSUED BY ===");
+    debug_tls("=== CERTIFICATE ISSUED BY ===\n");
     debug_tls("Common Name (CN):\t\t");
     debug_tls("%s", cert->ca_cert_dn[X509_COMMON_NAME] ?
                     cert->ca_cert_dn[X509_COMMON_NAME] : not_part_of_cert);
@@ -1008,37 +1009,38 @@ void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx)
 
     debug_tls("Not Before:\t\t\t%s", ctime(&cert->not_before));
     debug_tls("Not After:\t\t\t%s", ctime(&cert->not_after));
-    debug_tls("RSA bitsize:\t\t\t%d", cert->rsa_ctx->num_octets*8);
+    debug_tls("RSA bitsize:\t\t\t%d\n", cert->rsa_ctx->num_octets*8);
     debug_tls("Sig Type:\t\t\t");
     switch (cert->sig_type)
     {
         case SIG_TYPE_MD5:
-            debug_tls("MD5");
+            debug_tls("MD5\n");
             break;
         case SIG_TYPE_SHA1:
-            debug_tls("SHA1");
+            debug_tls("SHA1\n");
             break;
         case SIG_TYPE_SHA256:
-            debug_tls("SHA256");
+            debug_tls("SHA256\n");
             break;
         case SIG_TYPE_SHA384:
-            debug_tls("SHA384");
+            debug_tls("SHA384\n");
             break;
         case SIG_TYPE_SHA512:
-            debug_tls("SHA512");
+            debug_tls("SHA512\n");
             break;
         default:
-            debug_tls("Unrecognized: %d", cert->sig_type);
+            debug_tls("Unrecognized: %d\n", cert->sig_type);
             break;
     }
 
     if (ca_cert_ctx)
     {
         int pathLenConstraint = 0;
-        debug_tls("Verify:\t\t\t\t%s",
+        debug_tls("Verify:\t\t\t\t%s\n",
                 x509_display_error(x509_verify(ca_cert_ctx, cert,
                         &pathLenConstraint)));
     }
+#endif
 
 #if 0
     print_blob("Signature", cert->signature, cert->sig_len);

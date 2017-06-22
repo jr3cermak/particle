@@ -1,58 +1,49 @@
-/* axtls library by Rob Cermak
+/* axTLS library by Rob Cermak
+ * The base class for axTLSClient and axTLSServer
+ *
  */
 
+#include "axtls_config.h"
 #include "axtls.h"
-
-#if defined(CONFIG_DEBUG) && defined(CONFIG_PLATFORM_PARTICLE)
-
-#if CONFIG_DEBUG_MODE == DEBUG_MODE_LOGGER
-
-CONFIG_DEBUG_LOGGER_LIBRARY *outData =
-  new CONFIG_DEBUG_LOGGER_LIBRARY(CONFIG_DEBUG_LOGGER_CATEGORY);
-
-#endif /* LOGGER */
-
-#if CONFIG_DEBUG_MODE == DEBUG_MODE_SERIAL
-
-Serial *outData = new Serial();
-
-#endif /* SERIAL */
-
-#endif /* CONFIG_DEBUG */
-
 
 /**
  * Constructor.
  */
-Axtls::Axtls()
+axTLS::axTLS()
 {
-  // be sure not to call anything that requires hardware be initialized here, put those in begin()
+  // be sure not to call anything that requires hardware be
+  // initialized here, put those in begin()
 }
 
 /**
  * Example method.
  */
-void Axtls::begin()
+void axTLS::begin()
 {
     // initialize hardware
-    //Serial.println("called begin");
-    debug_tls("called begin");
+#ifdef CONFIG_DEBUG
+    debug_tls("axTLS::begin()\n");
+#endif
 }
 
 /**
  * Example method.
  */
-void Axtls::process()
+void axTLS::process()
 {
     // do something useful
-    Serial.println("called process");
+#ifdef CONFIG_DEBUG
+    debug_tls("axTLS::process()\n");
+#endif
     doit();
 }
 
 /**
-* Example private method
-*/
-void Axtls::doit()
+ * Example private method.
+ */
+void axTLS::doit()
 {
-    Serial.println("called doit");
+#ifdef CONFIG_DEBUG
+    debug_tls("axTLS::doit()\n");
+#endif
 }

@@ -1,0 +1,89 @@
+#!/bin/bash
+#set -x
+
+# Defines
+##
+DEV=photon
+DEVNAME=testPhoton
+FWV=0.6.2
+MAIN=usage.ino
+BIN=tmp.bin
+ERROR_LOG=err.txt
+DO_FLASH=0
+DO_BUILD=0
+DO_SFLASH=0
+DO_MONITOR=0
+
+# REF: http://wiki.bash-hackers.org/howto/getopts_tutorial
+while getopts bfms option
+do
+  case "${option}"
+  in
+    b) DO_BUILD=1;;
+    f) DO_FLASH=1;;
+    m) DO_MONITOR=1;;
+    s) DO_SFLASH=1;;
+  esac
+done
+
+# Sources
+##
+
+# Local files
+##
+LOCAL_FILES="axtls_config.h"
+
+# Extra libraries
+##
+AXTLS_LIB="`ls ../../src/*.h ../../src/*.cpp`"
+
+# Bring all the file together in a single list
+##
+FILES="${LOCAL_FILES} ${AXTLS_LIB}"
+
+if [ "${DO_BUILD}" == "1" ]; then
+
+  # Remove tmp.bin
+  ##
+  rm -f ${BIN}
+
+  # Compile
+  #   Capture any errors via tee to err.txt
+  ##
+  particle compile ${DEV} ${MAIN} ${FILES} --saveTo ${BIN} | tee ${ERROR_LOG}
+  if [ ! -e ${BIN} ]; then
+    echo "Compile failed.  Errors captured in err.txt.";
+    exit;
+  fi
+
+  # Maintain an old copy 
+  ##
+  if [ -e "upd.bin" ];then
+    cp upd.bin old.bin
+  fi
+  cp ${BIN} upd.bin
+fi
+
+# Flashing
+##
+if [ "${DO_FLASH}" == "1" ]; then
+  if [ "${DEV}" == "photon" ]; then
+    if [ "${DO_SFLASH}" == "0" ]; then
+      particle flash ${DEVNAME} ${MAIN} ${FILES}
+    fi
+    if [ "${DO_SFLASH}" == "1" ]; then
+      # Upload via YMODEM
+      ##
+      stty -f /dev/cu.usbmodem* speed 28800 > /dev/null
+      particle flash --serial ${BIN}
+    fi
+  fi
+  # Wait a bit for device to boot up
+  ##
+fi
+
+# Monitor: Serial or Logging
+##
+if [ "${DO_MONITOR}" == "1" ]; then
+  particle serial monitor --follow
+fi
