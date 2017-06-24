@@ -283,7 +283,7 @@ extern const uint8_t ssl_prot_prefs[NUM_PROTOCOLS];
 #if !defined(CONFIG_PLATFORM_PARTICLE)
 SSL *ssl_new(SSL_CTX *ssl_ctx, int client_fd);
 #else
-SSL *ssl_new(SSL_CTX *ssl_ctx, void *client_fd);
+SSL *ssl_new(SSL_CTX *ssl_ctx, SSL *client_fd);
 #endif
 void disposable_new(SSL *ssl);
 void disposable_free(SSL *ssl);

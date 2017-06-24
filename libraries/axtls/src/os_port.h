@@ -161,7 +161,9 @@ typedef struct timeval {
 
 EXP_FUNC void STDCALL gettimeofday(struct timeval* t,void* timezone);
 
+#ifdef CONFIG_DEBUG
 void debugger_callback(const char* fmt, ...);
+#endif
 
 /**
  * @file       BlynkProtocolDefs.h

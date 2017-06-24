@@ -2508,8 +2508,13 @@ EXP_FUNC void STDCALL ssl_display_error(int error_code) {}
 
 #ifdef CONFIG_BINDINGS
 #if !defined(CONFIG_SSL_ENABLE_CLIENT)
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 EXP_FUNC SSL * STDCALL ssl_client_new(SSL_CTX *ssl_ctx, int client_fd, const
         uint8_t *session_id, uint8_t sess_id_size)
+#else
+EXP_FUNC SSL * STDCALL ssl_client_new(SSL_CTX *ssl_ctx, SSL *client_fd, const
+        uint8_t *session_id, uint8_t sess_id_size)
+#endif
 {
    //printf("%s", unsupported_str);
     return NULL;

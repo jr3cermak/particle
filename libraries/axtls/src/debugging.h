@@ -44,6 +44,10 @@
  * by the OS.
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,15 +57,11 @@
 #define STDIN_FILENO        0
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-static void print_options(char *option);
-static void print_server_options(char *option);
-static void print_client_options(char *option);
-static void display_cipher(SSL *ssl);
-static void display_session_id(SSL *ssl);
+void print_options(char *option);
+void print_server_options(char *option);
+void print_client_options(char *option);
+void display_cipher(SSL *ssl);
+void display_session_id(SSL *ssl);
 
 #ifdef __cplusplus
 }

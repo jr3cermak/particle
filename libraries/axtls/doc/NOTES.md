@@ -39,6 +39,17 @@ one function call at a time, you will slowly find the offending code that uses
 Other things to avoid are gettimeofday via sys/time.h.  This will pull in a
 symbol gettimeofday that cannot be used with the Particle platform.
 
+Other symbol errors may look like the following may not be as easy to find:
+
+```
+../../../build/target/user/platform-6-mlibuser.a(tls1_clnt.o): In function `ssl_client_new':
+tls1_clnt.cpp:74: undefined reference to `ssl_new'
+```
+
+Check all your function arguments.  If there is a argument type that is mismatched in
+the function, this may cause a symbol missing error.   There may be functions declared
+as static that need to be removed so they are accessible by other functions.
+
 There are some reserved words and variables imported via "Particle.h" or
 "application.h" that needed to be avoided.
 
@@ -93,21 +104,25 @@ There are some run-time options:
 
 Some of these will only work when CONFIG_DEBUG is defined.
 
-# Debugging
+# Debugging / Logging
 
 To access internal debugging of this library, CONFIG_DEBUG
 needs to be defined and you define a callback function for
-debug_tls().
+debug_tls() called debugger_callback() in your main program
+with the .ino extension.
+
+You can adjust the buffer size with the #define option called
+CONFIG_DEBUG_BUFFER_SIZE.  
 
 # Classes
 
 ## Base
 
-axtls
+axTLS
 
 ## Subclasses the inherit from the base
 
-axtlsClient
+axTLSClient
 
 Members:
 
@@ -121,7 +136,7 @@ Members:
 * write()
 * stop()
 
-axtlsServer
+axTLSServer
 
 Members:
 
@@ -141,20 +156,49 @@ code.  The general porting has been completed.
 Try to use similar function calls (and documentation) as the base Particle
 firmware.
 
-## axtlsClient
+## axTLSClient
 
 ### available()
 
 Returns the number of bytes available for reading for the current packet of
 data from the server.  All the characters have to be read out of the current
 packet (buffer) before the next packet of data is read from the server.  If you
-are expecting a large amount of data, it needs to be reassembled.
+are expecting a large amount of data, it needs to be reassembled.  Packet
+size is 512 bytes.
 
 ```C++
 // SYNTAX
-axtlsClient.available()
+axTLSClient.available()
 ```
 
 Returns the number of bytes available for reading.
 
+### certificateValid()
 
+### connect()
+
+### connected()
+
+### flush()
+
+### lastError()
+
+### read()
+
+### write()
+
+### stop()
+
+## axTLSServer
+
+### available()
+
+### begin()
+
+### clients()
+
+### read()
+
+### write()
+
+### stop()

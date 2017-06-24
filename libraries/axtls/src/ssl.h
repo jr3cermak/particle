@@ -255,7 +255,11 @@ EXP_FUNC void STDCALL ssl_ext_free(SSL_EXTENSIONS *ssl_ext);
  * @param client_fd [in] The client's file descriptor. 
  * @return An SSL object reference.
  */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 EXP_FUNC SSL * STDCALL ssl_server_new(SSL_CTX *ssl_ctx, int client_fd);
+#else
+EXP_FUNC SSL * STDCALL ssl_server_new(SSL_CTX *ssl_ctx, SSL *client_fd);
+#endif
 
 /**
  * @brief (client only) Establish a new SSL connection to an SSL server.
@@ -277,7 +281,11 @@ EXP_FUNC SSL * STDCALL ssl_server_new(SSL_CTX *ssl_ctx, int client_fd);
  * @return An SSL object reference. Use ssl_handshake_status() to check 
  * if a handshake succeeded.
  */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 EXP_FUNC SSL * STDCALL ssl_client_new(SSL_CTX *ssl_ctx, int client_fd, const uint8_t *session_id, uint8_t sess_id_size, SSL_EXTENSIONS* ssl_ext);
+#else
+EXP_FUNC SSL * STDCALL ssl_client_new(SSL_CTX *ssl_ctx, SSL *client_fd, const uint8_t *session_id, uint8_t sess_id_size, SSL_EXTENSIONS* ssl_ext);
+#endif
 
 /**
  * @brief Free any used resources on this connection. 
@@ -328,7 +336,11 @@ EXP_FUNC int STDCALL ssl_write(SSL *ssl, const uint8_t *out_data, int out_len);
  * @return A reference to the SSL object. Returns null if the object could not 
  * be found.
  */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 EXP_FUNC SSL * STDCALL ssl_find(SSL_CTX *ssl_ctx, int client_fd);
+#else
+EXP_FUNC SSL * STDCALL ssl_find(SSL_CTX *ssl_ctx, SSL *client_fd);
+#endif
 
 /**
  * @brief Get the session id for a handshake. 

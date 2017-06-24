@@ -66,6 +66,11 @@ aes.cpp requires a ntohl() function
 
 # Source files (modified)
 
+## ssl.h
+
+* Add #define for CONFIG_PLATFORM_PARTICLE to functions using int client_fd and
+create a companion SSL *client_fd argument
+
 ## tls1_svr.cpp
 
 * ssl_server_new() client_fd (int) -> (SSL *)
@@ -99,6 +104,10 @@ aes.cpp requires a ntohl() function
 * We might have problems with ctime()
 * x509_new() version (int) -> (int32_t)
 
+## bigint.h
+
+* Add `extern "C"` definition.
+
 ## bigint.cpp
 
 * Add `#include "axtls.h"` to the top if CONFIG_DEBUG && CONFIG_PLATFORM_PARTICLE is defined.
@@ -126,6 +135,7 @@ statements cause errors.  We will rewrite these now.
 * send_raw_packet(); rework file descriptor use
 * send_packet(); alloca needs a cast on the return pointer
 * errno and friends are got undefined somehow? It compiled before.
+* Update ssl_client_new int client_fd to SSL *client_fd.
 
 ## aes.cpp
 
@@ -151,8 +161,11 @@ statements cause errors.  We will rewrite these now.
 
 ## debugging.cpp; debugging.h
 
-Copied routines mainly used for the command line to allow project to
+* Copied routines mainly used for the command line to allow project to
 compile cleanly.  These can be phased out or reimplemented.
+* Remove `static` definition as this is referenced outside this code
+block.
+* Add `extern "C"` definition to debugging.h
 
 ## config.h
 
@@ -166,3 +179,4 @@ Using a copy from a basic Linux compile, the following options were changed or a
 * ADD: #define CONFIG_SSL_CLIENT_TIMEOUT 5000
 * ADD: #define CONFIG_SSL_CLIENT_RETRY_TIMEOUT 5000
 * ADD: #define CONFIG_SSL_CLIENT_MAX_RETRY 5
+* ADD: #define CONFIG_DEBUG_

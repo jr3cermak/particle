@@ -31,6 +31,12 @@
 #ifndef BIGINT_HEADER
 #define BIGINT_HEADER
 
+#if defined(CONFIG_PLATFORM_PARTICLE)
+#ifdef __cplusplus
+extern "C" {
+#endif
+#endif
+
 #include "crypto.h"
 
 BI_CTX *bi_initialize(void);
@@ -94,6 +100,12 @@ bigint *bi_crt(BI_CTX *ctx, bigint *bi,
         bigint *dP, bigint *dQ,
         bigint *p, bigint *q,
         bigint *qInv);
+#endif
+
+#if defined(CONFIG_PLATFORM_PARTICLE)
+#ifdef __cplusplus
+}
+#endif
 #endif
 
 #endif

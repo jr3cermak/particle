@@ -60,7 +60,7 @@
 /**
  * We've had some sort of command-line error. Print out the basic options.
  */
-static void print_options(char *option)
+void print_options(char *option)
 {
    //printf("axssl: Error: '%s' is an invalid command.\n", option);
    //printf("usage: axssl [s_server|s_client|version] [args ...]\n");
@@ -70,7 +70,7 @@ static void print_options(char *option)
 /**
  * We've had some sort of command-line error. Print out the server options.
  */
-static void print_server_options(char *option)
+void print_server_options(char *option)
 {
 #ifndef CONFIG_SSL_SKELETON_MODE
     int cert_size = ssl_get_config(SSL_MAX_CERT_CFG_OFFSET);
@@ -104,7 +104,7 @@ static void print_server_options(char *option)
 /**
  * We've had some sort of command-line error. Print out the client options.
  */
-static void print_client_options(char *option)
+void print_client_options(char *option)
 {
 #ifdef CONFIG_SSL_ENABLE_CLIENT
     int cert_size = ssl_get_config(SSL_MAX_CERT_CFG_OFFSET);
@@ -139,7 +139,7 @@ static void print_client_options(char *option)
 /**
  * Display what cipher we are using 
  */
-static void display_cipher(SSL *ssl)
+void display_cipher(SSL *ssl)
 {
    //printf("CIPHER is ");
     switch (ssl_get_cipher_id(ssl))
@@ -172,7 +172,7 @@ static void display_cipher(SSL *ssl)
 /**
  * Display what session id we have.
  */
-static void display_session_id(SSL *ssl)
+void display_session_id(SSL *ssl)
 {    
     int i;
     const uint8_t *session_id = ssl_get_session_id(ssl);
