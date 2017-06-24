@@ -38,9 +38,6 @@
 #include <stdarg.h>
 #include "os_port.h"
 #include "ssl.h"
-#if defined(CONFIG_DEBUG) && defined(CONFIG_PLATFORM_PARTICLE)
-#include "axtls.h"
-#endif
 
 /* The session expiry time */
 #define SSL_EXPIRY_TIME     (CONFIG_SSL_EXPIRY_TIME*3600)

@@ -22,20 +22,21 @@
 //SYSTEM_THREAD(DISABLED);
 
 #include "axtls.h"
+#include "os_port.h"
 
 // Use primary serial over USB interface for logging output
 // You can watch logging of the Particle device via the Particle CLI
 // This will enable basic diagnostic output.  See "axtls_config.h"
 // for other options.
 // $ particle serial monitor --follow
-SerialLogHandler logHandler;
-Logger myLog;
+SerialLogHandler logHandler(LOG_LEVEL_ALL);
+Logger myLog("axtls");
 
 // FUNCTIONS
 
 // This function is required when CONFIG_DEBUG is enabled.
 void debugger_callback(const char* fmt, ...) {
-  static char msg[CONFIG_DEBUG_BUFFER_SIZE];
+  static char msg[CONFIG_DEBUG_BUFFER_SIZE] = { 0 };
   static int mptr = 0;
   char buf[CONFIG_DEBUG_BUFFER_SIZE];
   char ch;
@@ -46,11 +47,11 @@ void debugger_callback(const char* fmt, ...) {
 
   int buflen = strlen(buf);
 
-  for (int i; i < buflen; i++) {
+  for (int i = 0; i < buflen; i++) {
     ch = buf[i];
     if (ch == 10 || ch == 13 || mptr == CONFIG_DEBUG_BUFFER_SIZE - 1) {
       if (mptr > 0) {
-        myLog.info(buf);
+        myLog.info(msg);
       }
       memset(msg, 0, CONFIG_DEBUG_BUFFER_SIZE);
       if (mptr == CONFIG_DEBUG_BUFFER_SIZE - 1) {
@@ -91,6 +92,7 @@ void loop() {
       Log.trace("loop(): do_once; this ignores debug options");
       debug_tls("loop()\n");
       res = axClient.connect("jupyter.lccllc.info", 4443);
+      Log.trace("Connect result=%d",res);
       debug_tls("Connect result=%d\n", res);
     }
 }

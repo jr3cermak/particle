@@ -41,9 +41,6 @@
 #ifdef CONFIG_WIN32_USE_CRYPTO_LIB
 #include "wincrypt.h"
 #endif
-#if defined(CONFIG_PLATFORM_PARTICLE) && defined(CONFIG_DEBUG)
-#include "axtls.h"
-#endif
 
 #ifndef WIN32
 #if !defined(CONFIG_PLATFORM_PARTICLE)
@@ -345,7 +342,7 @@ static void print_hex(uint8_t hex)
     if (++hex_index >= hex_finish && column > 0)
     {
         //printf("\n");
-        debug_tls("%s",buf);
+        debug_tls("%s\n",buf);
         bidx = 0;
     }
 }
@@ -366,7 +363,7 @@ EXP_FUNC void STDCALL print_blob(const char *format,
     char tmp[80];
     va_list(ap);
 
-    va_start(ap, format);
+    va_start(ap, size);
     vsnprintf(tmp, 80, format, ap);
     debug_tls(tmp);
     print_hex_init(size);

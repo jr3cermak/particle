@@ -13,9 +13,7 @@ axTLS::axTLS()
 {
   // be sure not to call anything that requires hardware be
   // initialized here, put those in begin()
-#ifdef CONFIG_DEBUG
   debug_tls("axTLS()\n");
-#endif
 }
 
 /**
@@ -24,9 +22,15 @@ axTLS::axTLS()
 void axTLS::begin()
 {
     // initialize hardware
-#ifdef CONFIG_DEBUG
     debug_tls("axTLS::begin()\n");
-#endif
+}
+
+/**
+ * Example private method.
+ */
+void axTLS::doit()
+{
+    debug_tls("axTLS::doit()\n");
 }
 
 /**
@@ -35,20 +39,103 @@ void axTLS::begin()
 void axTLS::process()
 {
     // do something useful
-#ifdef CONFIG_DEBUG
     debug_tls("axTLS::process()\n");
-#endif
     doit();
 }
 
-/**
- * Example private method.
- */
-void axTLS::doit()
-{
-#ifdef CONFIG_DEBUG
-    debug_tls("axTLS::doit()\n");
-#endif
+// Generic reader via SSL
+int axTLSClient::read(uint8_t *msg) {
+}
+
+// This is the SOCKET_READ we need
+// We pass this into axtls library as
+// a function callback.
+// We need to introduce a timer to wait for
+// the desired number of bytes.
+//
+int axTLS::recvTLS(void *ssl, uint8_t *in_data, int in_len) {
+  int ret = 0;
+  int timeout = 0;
+
+  // We have to extract the _client pointer
+  SSL *real_ssl = (SSL *)ssl;
+  TCPClient *sock = (TCPClient *) real_ssl->ssl_ctx->_client;
+
+  debug_tls("Want %d byte(s)\n",in_len);
+  Particle.process();
+
+  debug_tls("ssl(%p) ssl_ctx(%p) sock(%p)\n",real_ssl,real_ssl->ssl_ctx,sock);
+  debug_tls("sock->connected():%d sock->available():%d\n", sock->connected(), sock->available());
+
+  // Loop here for a bit until we get data or we timeout
+  while (ret == 0 && timeout < CONFIG_HTTP_TIMEOUT) {
+    if (sock->connected()) {
+      if (sock->available() > 0) {
+        ret = sock->read(in_data, in_len);
+      } else {
+        delay(10); // 0.01s (300 ~ 3s)
+        Particle.process();
+        timeout++;
+      }
+    } else {
+      // No longer connected, return a bad result
+      ret = -1;
+    }
+  }
+  // Check for timeout
+  if (timeout >= CONFIG_HTTP_TIMEOUT) {
+    debug_tls("TCP read() timeout\n");
+    ret = -1;
+  }
+
+  debug_tls("Got %d byte(s)\n",ret);
+  return ret;
+}
+
+// This is the SOCKET_WRITE we need
+// We pass this into axtls library as
+// a function callback.
+int axTLS::sendTLS(void *ssl, uint8_t *out_data, int out_len) {
+  int ret = 0;
+
+  // We have to extract the _client pointer
+  SSL *real_ssl = (SSL *)ssl;
+  TCPClient *sock = (TCPClient *) real_ssl->ssl_ctx->_client;
+
+  debug_tls("ssl(%p) ssl_ctx(%p) sock(%p)\n",real_ssl,real_ssl->ssl_ctx,sock);
+  debug_tls("sock->connected():%d sock->available():%d\n", sock->connected(), sock->available());
+  if (sock->connected()) {
+    ret = sock->write(out_data, out_len);
+    sock->flush();
+  } else {
+    return -1;
+  }
+
+  // Allow the WiFi module to catch up
+  Particle.process();
+  debug_tls("Wanted to send %d bytes, sent %d bytes\n", out_len, ret);
+
+  return ret;
+}
+
+// Generic writer over SSL
+int axTLSClient::write(uint8_t *msg) {
+  int res = 0;
+  if (connected) {
+    Particle.process();
+    res = ssl_write(ssl, msg, strlen((char *)msg));
+
+    if (res < 0) {
+      ssl_free(ssl);
+      ssl_ctx_free(ssl_ctx);
+      _client.stop();
+      connected = false;
+      res = -1;
+    } else {
+      debug_tls("successfully wrote to ssl_write()");
+    }
+  }
+  return res;
 }
 
 /**
@@ -56,9 +143,7 @@ void axTLS::doit()
  */
 axTLSClient::axTLSClient()
 {
-#ifdef CONFIG_DEBUG
   debug_tls("axTLSClient()\n");
-#endif
   //sin_addr = inet_addr("127.0.0.1");
   cert_size = ssl_get_config(SSL_MAX_CERT_CFG_OFFSET);
   ca_cert_size = ssl_get_config(SSL_MAX_CA_CERT_CFG_OFFSET);
@@ -68,8 +153,8 @@ axTLSClient::axTLSClient()
 
 int axTLSClient::connect(const char* hn, uint16_t port)
 {
-  debug_tls("begin connect()");
-  debug_tls("host:%s port:%d", hn, port);
+  debug_tls("begin connect()\n");
+  debug_tls("host:%s port:%d\n", hn, port);
 
   cert_size = ssl_get_config(SSL_MAX_CERT_CFG_OFFSET);
   ca_cert_size = ssl_get_config(SSL_MAX_CA_CERT_CFG_OFFSET);
@@ -77,13 +162,14 @@ int axTLSClient::connect(const char* hn, uint16_t port)
   cert = (char **)calloc(1, sizeof(char *)*cert_size);
 
   if ((ssl_ctx = ssl_ctx_new(options, SSL_DEFAULT_CLNT_SESS)) == NULL) {
-    debug_tls("Error: Client context is invalid");
+    debug_tls("Error: Client context is invalid\n");
     return 1;
   }
 
   // Always perform an init here to update ssl_ctx pointer on
   // i/o pathway.  TODO: fix later
   //this->init();
+  set_io_callbacks(ssl_ctx, &axTLS::sendTLS, &axTLS::recvTLS);
 
   // Assign ssl_ctx->_client here
   ssl_ctx->_client = &_client;
@@ -94,7 +180,7 @@ int axTLSClient::connect(const char* hn, uint16_t port)
   // Ready to make the connection, but via the TcpClient layer
   while (!connected && retry < CONFIG_SSL_CLIENT_MAX_RETRY) {
     retry++;
-    debug_tls("connect() try %d", retry);
+    debug_tls("connect() try %d\n", retry);
     if (_client.connect(hn, port)) {
       connected = true;
     } else {
@@ -102,7 +188,7 @@ int axTLSClient::connect(const char* hn, uint16_t port)
     }
   }
   if (!connected) {
-    debug_tls("Connection failed");
+    debug_tls("Connection failed\n");
     return 1;
   }
 
@@ -145,7 +231,7 @@ int axTLSClient::connect(const char* hn, uint16_t port)
     }
     else
     {
-        debug_tls("ssl_client_new()");
+        debug_tls("ssl_client_new()\n");
         ssl = ssl_client_new(ssl_ctx, client_fd, NULL, 0, extensions);
     }
 
@@ -156,7 +242,7 @@ int axTLSClient::connect(const char* hn, uint16_t port)
         {
             ssl_display_error(res);
         }
-        debug_tls("Handshake error: %d",res);
+        debug_tls("Handshake error: %d\n",res);
         ssl_free(ssl);
         ssl_ctx_free(ssl_ctx);
         _client.stop();
@@ -175,7 +261,7 @@ int axTLSClient::connect(const char* hn, uint16_t port)
     // res = 0 (success)
     // res = !0 (failed)
     // We can also check the state of !connected
-    debug_tls("connect():%d",res);
+    debug_tls("connect():%d\n",res);
     return res;
 
 }
@@ -186,8 +272,6 @@ int axTLSClient::connect(const char* hn, uint16_t port)
  */
 axTLSServer::axTLSServer()
 {
-#ifdef CONFIG_DEBUG
   debug_tls("axTLSServer()\n");
-#endif
 }
 

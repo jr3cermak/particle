@@ -16,7 +16,8 @@
  * General Configuration
  */
 #define PREFIX "/usr/local"
-#define CONFIG_DEBUG
+#define CONFIG_DEBUG 1
+//#undef CONFIG_DEBUG
 #define CONFIG_DEBUG_BUFFER_SIZE 80
 #define CONFIG_STRIP_UNWANTED_SECTIONS 1
 #undef CONFIG_VISUAL_STUDIO_7_0

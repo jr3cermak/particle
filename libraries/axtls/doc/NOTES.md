@@ -114,6 +114,10 @@ with the .ino extension.
 You can adjust the buffer size with the #define option called
 CONFIG_DEBUG_BUFFER_SIZE.  
 
+For Log.trace() to work you need to ensure all log levels
+are reported:
+`SerialLogHandler logHandler(LOG_LEVEL_ALL);`
+
 # Classes
 
 ## Base

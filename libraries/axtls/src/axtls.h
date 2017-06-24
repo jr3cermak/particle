@@ -10,15 +10,6 @@
 #include "ssl.h"
 #include "debugging.h"
 
-// If you enable the debugger, you will need to define
-// the debugger_callback function to read the final
-// string and send it out the destination of your choice.
-#if defined(CONFIG_DEBUG) && defined(CONFIG_PLATFORM_PARTICLE)
-
-#define debug_tls( fmt, ... ) debugger_callback(fmt, ##__VA_ARGS__)
-
-#endif /* CONFIG_DEBUG */
-
 // This is your main class that users will import into their application
 class axTLS
 {
@@ -39,11 +30,16 @@ public:
    */
   void process();
 
+  // static members are shared between all created objects
+  static int recvTLS(void *ssl, uint8_t *in_data, int in_len);
+  static int sendTLS(void *ssl, uint8_t *out_data, int out_len);
+
 private:
   /**
    * Example private method
    */
   void doit();
+
 };
 
 /**
@@ -78,6 +74,10 @@ private:
   int connected = false;
   int retry = 0;
   SSL *client_fd = NULL;
+
+  // Basic read and write routines for Client
+  int read(uint8_t *msg);
+  int write(uint8_t *msg);
 };
 
 /**

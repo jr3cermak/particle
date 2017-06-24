@@ -162,9 +162,22 @@ typedef struct timeval {
 EXP_FUNC void STDCALL gettimeofdayPart(struct timeval* t,void* timezone);
 EXP_FUNC long STDCALL timePart();
 
+#if defined(CONFIG_PLATFORM_PARTICLE)
 #ifdef CONFIG_DEBUG
-void debugger_callback(const char* fmt, ...);
-#endif
+
+// If you enable the debugger, you will need to define
+// the debugger_callback function to read the final
+// string and send it out the destination of your choice.
+
+extern void debugger_callback(const char* fmt, ...);
+#define debug_tls( fmt, ... ) debugger_callback(fmt, ##__VA_ARGS__)
+
+#else
+
+#define debug_tls( fmt, ... )
+
+#endif /* CONFIG_DEBUG */
+#endif /* PARTICLE */
 
 /**
  * @file       BlynkProtocolDefs.h

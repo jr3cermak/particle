@@ -40,9 +40,6 @@
 #include <time.h>
 #include "os_port.h"
 #include "crypto_misc.h"
-#if defined(CONFIG_DEBUG) && defined(CONFIG_PLATFORM_PARTICLE)
-#include "axtls.h"
-#endif
 
 #ifdef CONFIG_SSL_CERT_VERIFICATION
 static int x509_v3_subject_alt_name(const uint8_t *cert, int offset, 
@@ -217,10 +214,8 @@ end_cert:
        //printf("Error: Invalid X509 ASN.1 file (%s)\n",
                         x509_display_error(ret));
 #else
-#ifdef CONFIG_DEBUG
         debug_tls("Error: Invalid X509 ASN.1 file (%s)\n",
                         x509_display_error(ret));
-#endif
 #endif /* PARTICLE */
 #endif
         x509_free(x509_ctx);
@@ -834,38 +829,37 @@ void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx)
     if (cert == NULL)
         return;
 
-#ifdef CONFIG_DEBUG
     debug_tls("=== CERTIFICATE ISSUED TO ===\n");
     debug_tls("Common Name (CN):\t\t");
-    debug_tls("%s", cert->cert_dn[X509_COMMON_NAME] ?
+    debug_tls("%s\n", cert->cert_dn[X509_COMMON_NAME] ?
                     cert->cert_dn[X509_COMMON_NAME] : not_part_of_cert);
 
     debug_tls("Organization (O):\t\t");
-    debug_tls("%s", cert->cert_dn[X509_ORGANIZATION] ?
+    debug_tls("%s\n", cert->cert_dn[X509_ORGANIZATION] ?
         cert->cert_dn[X509_ORGANIZATION] : not_part_of_cert);
 
     if (cert->cert_dn[X509_ORGANIZATIONAL_UNIT]) 
     {
         debug_tls("Organizational Unit (OU):\t");
-        debug_tls("%s", cert->cert_dn[X509_ORGANIZATIONAL_UNIT]);
+        debug_tls("%s\n", cert->cert_dn[X509_ORGANIZATIONAL_UNIT]);
     }
 
     if (cert->cert_dn[X509_LOCATION]) 
     {
         debug_tls("Location (L):\t\t\t");
-        debug_tls("%s", cert->cert_dn[X509_LOCATION]);
+        debug_tls("%s\n", cert->cert_dn[X509_LOCATION]);
     }
 
     if (cert->cert_dn[X509_COUNTRY]) 
     {
         debug_tls("Country (C):\t\t\t");
-        debug_tls("%s", cert->cert_dn[X509_COUNTRY]);
+        debug_tls("%s\n", cert->cert_dn[X509_COUNTRY]);
     }
 
     if (cert->cert_dn[X509_STATE]) 
     {
         debug_tls("State (ST):\t\t\t");
-        debug_tls("%s", cert->cert_dn[X509_STATE]);
+        debug_tls("%s\n", cert->cert_dn[X509_STATE]);
     }
 
     if (cert->basic_constraint_present)
@@ -980,35 +974,35 @@ void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx)
 
     debug_tls("=== CERTIFICATE ISSUED BY ===\n");
     debug_tls("Common Name (CN):\t\t");
-    debug_tls("%s", cert->ca_cert_dn[X509_COMMON_NAME] ?
+    debug_tls("%s\n", cert->ca_cert_dn[X509_COMMON_NAME] ?
                     cert->ca_cert_dn[X509_COMMON_NAME] : not_part_of_cert);
 
     debug_tls("Organization (O):\t\t");
-    debug_tls("%s", cert->ca_cert_dn[X509_ORGANIZATION] ?
+    debug_tls("%s\n", cert->ca_cert_dn[X509_ORGANIZATION] ?
         cert->ca_cert_dn[X509_ORGANIZATION] : not_part_of_cert);
 
     if (cert->ca_cert_dn[X509_ORGANIZATIONAL_UNIT]) 
     {
         debug_tls("Organizational Unit (OU):\t");
-        debug_tls("%s", cert->ca_cert_dn[X509_ORGANIZATIONAL_UNIT]);
+        debug_tls("%s\n", cert->ca_cert_dn[X509_ORGANIZATIONAL_UNIT]);
     }
 
     if (cert->ca_cert_dn[X509_LOCATION]) 
     {
         debug_tls("Location (L):\t\t\t");
-        debug_tls("%s", cert->ca_cert_dn[X509_LOCATION]);
+        debug_tls("%s\n", cert->ca_cert_dn[X509_LOCATION]);
     }
 
     if (cert->ca_cert_dn[X509_COUNTRY]) 
     {
         debug_tls("Country (C):\t\t\t");
-        debug_tls("%s", cert->ca_cert_dn[X509_COUNTRY]);
+        debug_tls("%s\n", cert->ca_cert_dn[X509_COUNTRY]);
     }
 
     if (cert->ca_cert_dn[X509_STATE]) 
     {
         debug_tls("State (ST):\t\t\t");
-        debug_tls("%s", cert->ca_cert_dn[X509_STATE]);
+        debug_tls("%s\n", cert->ca_cert_dn[X509_STATE]);
     }
 
     debug_tls("Not Before:\t\t\t%s", ctime(&cert->not_before));
@@ -1044,7 +1038,6 @@ void x509_print(const X509_CTX *cert, CA_CERT_CTX *ca_cert_ctx)
                 x509_display_error(x509_verify(ca_cert_ctx, cert,
                         &pathLenConstraint)));
     }
-#endif
 
 #if 0
     print_blob("Signature", cert->signature, cert->sig_len);
