@@ -41,6 +41,9 @@
 #ifdef CONFIG_WIN32_USE_CRYPTO_LIB
 #include "wincrypt.h"
 #endif
+#if defined(CONFIG_PLATFORM_PARTICLE) && defined(CONFIG_DEBUG)
+#include "axtls.h"
+#endif
 
 #ifndef WIN32
 #if !defined(CONFIG_PLATFORM_PARTICLE)
@@ -67,6 +70,7 @@ const char * const unsupported_str = "Error: Feature not supported\n";
  */
 int get_file(const char *filename, uint8_t **buf)
 {
+#if !defined(CONFIG_PLATFORM_PARTICLE)
     int total_bytes = 0;
     int bytes_read = 0; 
     int filesize;
@@ -94,6 +98,10 @@ int get_file(const char *filename, uint8_t **buf)
     
     fclose(stream);
     return filesize;
+#else
+    /* PARTICLE does not do file i/o */
+    return -1;
+#endif
 }
 #endif
 
@@ -180,7 +188,11 @@ EXP_FUNC int STDCALL get_random(int num_rand_bytes, uint8_t *rand_data)
     int i;
 
     /* A proper implementation would use counters etc for entropy */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
     gettimeofday(&tv, NULL);    
+#else
+    gettimeofdayPart(&tv, NULL);    
+#endif
     ep = (uint64_t *)entropy_pool;
     ep[0] ^= ENTROPY_COUNTER1;
     ep[1] ^= ENTROPY_COUNTER2; 
@@ -228,6 +240,7 @@ int get_random_NZ(int num_rand_bytes, uint8_t *rand_data)
  * Some useful diagnostic routines
  */
 #if defined(CONFIG_SSL_FULL_MODE) || defined(CONFIG_DEBUG)
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 int hex_finish;
 int hex_index;
 
@@ -291,6 +304,81 @@ EXP_FUNC void STDCALL print_blob(const char *format,
     va_end(ap);
     TTY_FLUSH();
 }
+#else
+// Particle platform does not use tty I/O
+int hex_finish;
+int hex_index;
+char buf[256];
+int bsiz = sizeof(buf); 
+int bidx = 0;
+
+static void print_hex_init(int finish)
+{
+    hex_finish = finish;
+    hex_index = 0;
+}
+
+static void print_hex(uint8_t hex)
+{
+    static int column;
+
+    if (hex_index == 0)
+    {
+        column = 0;
+    }
+
+    //printf("%02x ", hex);
+    bidx = bidx + snprintf(buf+bidx,bsiz-bidx,"%02x ",hex);
+    if (++column == 8)
+    {
+        //printf(": ");
+        bidx = bidx + snprintf(buf+bidx,bsiz-bidx,": ");
+    }
+    else if (column >= 16)
+    {
+        //printf("\n");
+        debug_tls("%s",buf);
+        bidx = 0;
+        column = 0;
+    }
+
+    if (++hex_index >= hex_finish && column > 0)
+    {
+        //printf("\n");
+        debug_tls("%s",buf);
+        bidx = 0;
+    }
+}
+
+/**
+ * Spit out a blob of data for diagnostics. The data is is a nice column format
+ * for easy reading.
+ *
+ * @param format   [in]    The string (with possible embedded format characters)
+ * @param size     [in]    The number of numbers to print
+ * @param data     [in]    The start of data to use
+ * @param ...      [in]    Any additional arguments
+ */
+EXP_FUNC void STDCALL print_blob(const char *format, 
+        const uint8_t *data, int size, ...)
+{
+    int i;
+    char tmp[80];
+    va_list(ap);
+
+    va_start(ap, format);
+    vsnprintf(tmp, 80, format, ap);
+    debug_tls(tmp);
+    print_hex_init(size);
+    for (i = 0; i < size; i++)
+    {
+        print_hex(data[i]);
+    }
+
+    va_end(ap);
+    TTY_FLUSH();
+}
+#endif
 #elif defined(WIN32)
 /* VC6.0 doesn't handle variadic macros */
 EXP_FUNC void STDCALL print_blob(const char *format, const unsigned char *data,
@@ -299,7 +387,11 @@ EXP_FUNC void STDCALL print_blob(const char *format, const unsigned char *data,
 
 #if defined(CONFIG_SSL_HAS_PEM) || defined(CONFIG_HTTP_HAS_AUTHORIZATION)
 /* base64 to binary lookup table */
+#if !defined(CONFIG_PLATFORM_PARTICLE)
 static const uint8_t map[128] =
+#else
+static const uint8_t mapPart[128] =
+#endif
 {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -324,7 +416,11 @@ EXP_FUNC int STDCALL base64_decode(const char *in, int len,
     g = 3;
     for (x = y = z = t = 0; x < len; x++)
     {
+#if !defined(CONFIG_PLATFORM_PARTICLE)
         if ((c = map[in[x]&0x7F]) == 0xff)
+#else
+        if ((c = mapPart[in[x]&0x7F]) == 0xff)
+#endif
             continue;
 
         if (c == 254)   /* this is the end... */

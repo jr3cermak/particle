@@ -66,6 +66,15 @@ aes.cpp requires a ntohl() function
 
 # Source files (modified)
 
+## crypto_misc.cpp
+
+* define/remove file i/o references
+* gettimeofday -> gettimeofdayPart
+* disable file i/o get_file()
+* Fix up print_blob() and related functions
+* needs #include "axtls.h" if CONFIG_DEBUG is on
+* Conflicting symbol: map -> mapPart
+
 ## ssl.h
 
 * Add #define for CONFIG_PLATFORM_PARTICLE to functions using int client_fd and
@@ -83,6 +92,7 @@ create a companion SSL *client_fd argument
 ## tls1_clnt.cpp
 
 * ssl_client_new() (int) -> (SSL *) for client_fd
+* time() -> timePart()
 
 ## crypto_misc.h
 
@@ -95,7 +105,8 @@ create a companion SSL *client_fd argument
 
 ## x509.cpp
 
-* Add `#include "axtls.h"` to the top if CONFIG_DEBUG && CONFIG_PLATFORM_PARTICLE is defined.
+* Add `#include "axtls.h"` to the top if CONFIG_DEBUG && CONFIG_PLATFORM_PARTICLE
+is defined.
   * TODO: There are some disjointed lines in x509_print()
 * Fix up more printf statements
 * Change references of (int*) to (int32_t*) for basic_constraint_pathLenContraint
@@ -103,6 +114,7 @@ create a companion SSL *client_fd argument
 * Reimplement gettimeofday -> gettimeofdayParticle()
 * We might have problems with ctime()
 * x509_new() version (int) -> (int32_t)
+* gettimeofday() -> gettimeofdayPart()
 
 ## bigint.h
 
@@ -136,6 +148,7 @@ statements cause errors.  We will rewrite these now.
 * send_packet(); alloca needs a cast on the return pointer
 * errno and friends are got undefined somehow? It compiled before.
 * Update ssl_client_new int client_fd to SSL *client_fd.
+* time() -> timePart()
 
 ## aes.cpp
 
@@ -143,7 +156,7 @@ statements cause errors.  We will rewrite these now.
 
 ## os_port.cpp
 
-* Implement gettimeofday
+* Implement gettimeofday and time as gettimeofdayPart and timePart.
 
 ## os_port.h
 

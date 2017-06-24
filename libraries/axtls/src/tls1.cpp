@@ -1856,7 +1856,11 @@ int readParticle(SSL *ssl, uint8_t *rec_buf, int sz_buf) {
 SSL_SESSION *ssl_session_update(int max_sessions, SSL_SESSION *ssl_sessions[], 
         SSL *ssl, const uint8_t *session_id)
 {
+#if !defined(CONFIG_PLATFORM_PARTICLE)
     time_t tm = time(NULL);
+#else
+    time_t tm = timePart();
+#endif
     time_t oldest_sess_time = tm;
     SSL_SESSION *oldest_sess = NULL;
     int i;

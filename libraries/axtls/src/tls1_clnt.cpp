@@ -194,7 +194,11 @@ int do_client_connect(SSL *ssl)
 static int send_client_hello(SSL *ssl)
 {
     uint8_t *buf = ssl->bm_data;
+#if !defined(CONFIG_PLATFORM_PARTICLE)
     time_t tm = time(NULL);
+#else
+    time_t tm = timePart();
+#endif
     uint8_t *tm_ptr = &buf[6]; /* time will go here */
     int i, offset, ext_offset;
     int ext_len = 0;

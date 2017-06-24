@@ -159,7 +159,8 @@ typedef struct timeval {
   long tv_usec;
 } timeval;
 
-EXP_FUNC void STDCALL gettimeofday(struct timeval* t,void* timezone);
+EXP_FUNC void STDCALL gettimeofdayPart(struct timeval* t,void* timezone);
+EXP_FUNC long STDCALL timePart();
 
 #ifdef CONFIG_DEBUG
 void debugger_callback(const char* fmt, ...);

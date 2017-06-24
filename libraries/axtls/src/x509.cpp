@@ -453,7 +453,11 @@ int x509_verify(const CA_CERT_CTX *ca_cert_ctx, const X509_CTX *cert,
         expn = cert->rsa_ctx->e;
     }
 
+#if !defined(CONFIG_PLATFORM_PARTICLE)
     gettimeofday(&tv, NULL);
+#else
+    gettimeofdayPart(&tv, NULL);
+#endif
 
     /* check the not before date */
     if (tv.tv_sec < cert->not_before)
