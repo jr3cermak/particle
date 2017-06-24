@@ -31,7 +31,7 @@ done
 
 # Local files
 ##
-LOCAL_FILES="axtls_config.h"
+LOCAL_FILES="Private.h axtls_config.h"
 
 # Extra libraries
 ##

@@ -52,7 +52,13 @@ public:
    * Constructor
    */
   axTLSClient();
+  int available();
   int connect(const char* hn, uint16_t port);
+  int connected();
+
+  // Basic read and write routines for Client
+  int read();
+  int write(uint8_t *msg);
 
 private:
   int res, i = 2;
@@ -71,13 +77,10 @@ private:
   const char *password = NULL;
   SSL_EXTENSIONS *extensions = NULL;
   TCPClient _client;
-  int connected = false;
+  int _connected = false;
   int retry = 0;
   SSL *client_fd = NULL;
 
-  // Basic read and write routines for Client
-  int read(uint8_t *msg);
-  int write(uint8_t *msg);
 };
 
 /**

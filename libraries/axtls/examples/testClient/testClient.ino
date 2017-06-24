@@ -23,6 +23,7 @@
 
 #include "axtls.h"
 #include "os_port.h"
+#include "Private.h"
 
 // Use primary serial over USB interface for logging output
 // You can watch logging of the Particle device via the Particle CLI
@@ -85,6 +86,12 @@ void setup() {
 void loop() {
     int i = 0;
     int res = 0;
+
+    unsigned char* data = (unsigned char *) malloc(sizeof(unsigned char) * 400);
+    unsigned char url[80] = { 0 };
+    int len = 0;
+
+
     // Use the library's initialized objects and functions
     if (do_once == 0) {
       axClient.process();
@@ -94,6 +101,19 @@ void loop() {
       res = axClient.connect("jupyter.lccllc.info", 4443);
       Log.trace("Connect result=%d",res);
       debug_tls("Connect result=%d\n", res);
+      if (axClient.connected()) {
+        strcpy((char *)url,"/test");
+        sprintf((char *)data, "GET %s HTTP/1.1\r\n",url);
+        len = sprintf((char *)data, "%sHost: jupyter.lccllc.info\r\nUser-Agent: %s/%s\r\n\r\n", data, "axTLS", "2.3.1a");
+
+        //sprintf((char *)data, "GET %s HTTP/1.1\r\n",url);
+        //sprintf((char *)data, "%sHost: things.ubidots.com\r\nUser-Agent: %s/%s\r\n", data, "axTLS", "2.3.1a");
+        //len = sprintf((char *)data, "%sX-Auth-Token: %s\r\n\r\n", data, authToken);
+        axClient.write(data);
+      }
+    }
+    if (axClient.connected() && axClient.available() > 0) {
+      axClient.read();
     }
 }
 

@@ -44,7 +44,68 @@ void axTLS::process()
 }
 
 // Generic reader via SSL
-int axTLSClient::read(uint8_t *msg) {
+int axTLSClient::read() {
+  int ctimeout = 0;
+  int res = 0;
+  unsigned char *readbuffer;
+  char buf[512] = { 0 };
+  int bptr = 0;
+  unsigned int i;
+  unsigned char ch;
+  int nb;
+
+  debug_tls("read:begin()");
+
+  // Wait a timeout or a valid response
+  while (ctimeout < CONFIG_HTTP_TIMEOUT and res == 0) {
+    if (_connected) {
+      if (_client.available() > 0) {
+        nb = ssl_read(ssl, &readbuffer);
+        if (nb > 0) {
+          debug_tls("read(%d)\n",strlen((char*)readbuffer));
+          for (i = 0; i < strlen((char*)readbuffer); i++) {
+            ch = readbuffer[i];
+            if (ch == 10 || ch == 13) {
+              if (bptr > 0) {
+                debug_tls("web>%s\n",(const char*)buf);
+                bptr = 0;
+                memset(buf, 0, sizeof(buf));
+              }
+            } else {
+              snprintf(buf+bptr,512-bptr,"%c",ch);
+              bptr++;
+            }
+          }
+          if (bptr > 0) {
+            debug_tls("web>%s",(const char*)buf);
+            bptr = 0;
+            memset(buf, 0, sizeof(buf));
+          }
+        } else {
+          if (nb < 0) {
+            res = nb;
+          }
+        }
+        ctimeout = 0;
+      } else {
+        Particle.process();
+        delay(100);
+      }
+    } else {
+      res = -1;
+    }
+    ctimeout++;
+  }
+
+  // The connection closed or died
+  if (res < 0) {
+      ssl_free(ssl);
+      ssl_ctx_free(ssl_ctx);
+      _client.stop();
+      _connected = false;
+  }
+  debug_tls("read:end(%d)",res);
+  return res;
 }
 
 // This is the SOCKET_READ we need
@@ -64,8 +125,8 @@ int axTLS::recvTLS(void *ssl, uint8_t *in_data, int in_len) {
   debug_tls("Want %d byte(s)\n",in_len);
   Particle.process();
 
-  debug_tls("ssl(%p) ssl_ctx(%p) sock(%p)\n",real_ssl,real_ssl->ssl_ctx,sock);
-  debug_tls("sock->connected():%d sock->available():%d\n", sock->connected(), sock->available());
+  //debug_tls("ssl(%p) ssl_ctx(%p) sock(%p)\n",real_ssl,real_ssl->ssl_ctx,sock);
+  debug_tls("R:sock->connected():%d sock->available():%d\n", sock->connected(), sock->available());
 
   // Loop here for a bit until we get data or we timeout
   while (ret == 0 && timeout < CONFIG_HTTP_TIMEOUT) {
@@ -102,8 +163,8 @@ int axTLS::sendTLS(void *ssl, uint8_t *out_data, int out_len) {
   SSL *real_ssl = (SSL *)ssl;
   TCPClient *sock = (TCPClient *) real_ssl->ssl_ctx->_client;
 
-  debug_tls("ssl(%p) ssl_ctx(%p) sock(%p)\n",real_ssl,real_ssl->ssl_ctx,sock);
-  debug_tls("sock->connected():%d sock->available():%d\n", sock->connected(), sock->available());
+  //debug_tls("ssl(%p) ssl_ctx(%p) sock(%p)\n",real_ssl,real_ssl->ssl_ctx,sock);
+  debug_tls("S:sock->connected():%d sock->available():%d\n", sock->connected(), sock->available());
   if (sock->connected()) {
     ret = sock->write(out_data, out_len);
     sock->flush();
@@ -121,7 +182,7 @@ int axTLS::sendTLS(void *ssl, uint8_t *out_data, int out_len) {
 // Generic writer over SSL
 int axTLSClient::write(uint8_t *msg) {
   int res = 0;
-  if (connected) {
+  if (_connected) {
     Particle.process();
     res = ssl_write(ssl, msg, strlen((char *)msg));
 
@@ -129,7 +190,7 @@ int axTLSClient::write(uint8_t *msg) {
       ssl_free(ssl);
       ssl_ctx_free(ssl_ctx);
       _client.stop();
-      connected = false;
+      _connected = false;
       res = -1;
     } else {
       debug_tls("successfully wrote to ssl_write()");
@@ -149,6 +210,10 @@ axTLSClient::axTLSClient()
   ca_cert_size = ssl_get_config(SSL_MAX_CA_CERT_CFG_OFFSET);
   ca_cert = (char **)calloc(1, sizeof(char *)*ca_cert_size);
   cert = (char **)calloc(1, sizeof(char *)*cert_size);
+}
+
+int axTLSClient::available() {
+  return _client.available();
 }
 
 int axTLSClient::connect(const char* hn, uint16_t port)
@@ -178,16 +243,16 @@ int axTLSClient::connect(const char* hn, uint16_t port)
   free(ca_cert);
 
   // Ready to make the connection, but via the TcpClient layer
-  while (!connected && retry < CONFIG_SSL_CLIENT_MAX_RETRY) {
+  while (!_connected && retry < CONFIG_SSL_CLIENT_MAX_RETRY) {
     retry++;
     debug_tls("connect() try %d\n", retry);
     if (_client.connect(hn, port)) {
-      connected = true;
+      _connected = true;
     } else {
       delay(CONFIG_SSL_CLIENT_RETRY_TIMEOUT);
     }
   }
-  if (!connected) {
+  if (!_connected) {
     debug_tls("Connection failed\n");
     return 1;
   }
@@ -208,7 +273,7 @@ int axTLSClient::connect(const char* hn, uint16_t port)
                 ssl_free(ssl);
                 ssl_ctx_free(ssl_ctx);
                 _client.stop();
-                connected = false;
+                _connected = false;
                 return 1;
             }
 
@@ -224,7 +289,7 @@ int axTLSClient::connect(const char* hn, uint16_t port)
                 //client_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
                 //connect(client_fd, (struct sockaddr *)&client_addr, 
                 //        sizeof(client_addr));
-                connected = _client.connect(hn, port);
+                _connected = _client.connect(hn, port);
                 // Should bail here if connect returns false
             }
         }
@@ -246,7 +311,7 @@ int axTLSClient::connect(const char* hn, uint16_t port)
         ssl_free(ssl);
         ssl_ctx_free(ssl_ctx);
         _client.stop();
-        connected = false;
+        _connected = false;
         return 1;
     }
 
@@ -263,9 +328,12 @@ int axTLSClient::connect(const char* hn, uint16_t port)
     // We can also check the state of !connected
     debug_tls("connect():%d\n",res);
     return res;
-
 }
 
+int axTLSClient::connected()
+{
+  return _connected;
+}
 
 /**
  * Server constructor
