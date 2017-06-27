@@ -2,6 +2,10 @@
 
 ## 2017-06-27
 
+* Found one bug in the axTLSClient:read() function.  I was not 
+returning a valid string amount and it would never exit the function.
+  * Example `j1` exits cleanly but does not close the connection properly.
+  * Example `j2` does not display yet.  We get data though.
 * Increased log buffer limit from 80 to 256 for testing.  This gives
 us clearer log statements.  Small adjustment to detecting when we
 have a full line or line feeds in debugger_callback() example.

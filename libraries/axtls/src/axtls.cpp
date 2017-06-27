@@ -46,24 +46,24 @@ void axTLS::process()
 // Generic reader via SSL
 int axTLSClient::read() {
   int ctimeout = 0;
-  int res = 0;
+  int ret = 0;
   unsigned char *readbuffer;
   char buf[512] = { 0 };
   int bptr = 0;
-  unsigned int i;
   unsigned char ch;
-  int nb;
+  int nb = 0;
 
   debug_tls("read:begin()\n");
 
   // Wait a timeout or a valid response
-  while (ctimeout < CONFIG_HTTP_TIMEOUT and res == 0) {
+  while (ctimeout < CONFIG_HTTP_TIMEOUT and ret == 0) {
     if (_connected) {
       if (_client.available() > 0) {
         nb = ssl_read(ssl, &readbuffer);
         if (nb > 0) {
-          debug_tls("read(%d)\n",strlen((char*)readbuffer));
-          for (i = 0; i < strlen((char*)readbuffer); i++) {
+          ret = strlen((char*)readbuffer);
+          debug_tls("read(%d)\n", ret);
+          for (int i = 0; i < ret; i++) {
             ch = readbuffer[i];
             if (ch == 10 || ch == 13) {
               if (bptr > 0) {
@@ -83,7 +83,7 @@ int axTLSClient::read() {
           }
         } else {
           if (nb < 0) {
-            res = nb;
+            ret = nb;
           }
         }
         ctimeout = 0;
@@ -92,20 +92,20 @@ int axTLSClient::read() {
         delay(100);
       }
     } else {
-      res = -1;
+      ret = -1;
     }
     ctimeout++;
   }
 
   // The connection closed or died
-  if (res < 0) {
+  if (ret < 0) {
       ssl_free(ssl);
       ssl_ctx_free(ssl_ctx);
       _client.stop();
       _connected = false;
   }
-  debug_tls("read:end(%d)\n",res);
-  return res;
+  debug_tls("read:end(%d)\n",ret);
+  return ret;
 }
 
 // This is the SOCKET_READ we need
