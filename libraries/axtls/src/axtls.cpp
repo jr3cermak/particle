@@ -216,6 +216,11 @@ int axTLSClient::available() {
   return _client.available();
 }
 
+int axTLSClient::close()
+{
+  return 0;
+}
+
 int axTLSClient::connect(const char* hn, uint16_t port)
 {
   debug_tls("begin connect()\n");

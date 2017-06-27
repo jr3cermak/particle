@@ -53,6 +53,7 @@ public:
    */
   axTLSClient();
   int available();
+  int close();
   int connect(const char* hn, uint16_t port);
   int connected();
 
@@ -63,7 +64,7 @@ public:
 private:
   int res, i = 2;
   uint16_t port = 443;
-  uint32_t options = SSL_SERVER_VERIFY_LATER|SSL_DISPLAY_CERTS;
+  uint32_t options = SSL_SERVER_VERIFY_LATER|SSL_DISPLAY_CERTS|SSL_DISPLAY_STATES;
   char *private_key_file = NULL;
   struct hostent *hostent;
   int reconnect = 0;

@@ -1,0 +1,318 @@
+0000000561 [hal.wlan] INFO: Using internal antenna
+0000000565 [system] INFO: ARM_WLAN_WD 1
+0000022630 [system] INFO: ARM_WLAN_WD 2
+0000022630 [hal.wlan] INFO: Bringing WiFi interface up with DHCP
+0000022882 [system] INFO: CLR_WLAN_WD 1, DHCP success
+0000022884 [system] INFO: Cloud: connecting
+0000022884 [system] INFO: Read Server Address = type:1,domain:device.spark.io
+0000022985 [system] INFO: Resolved host device.spark.io to 107.22.156.56
+0000023100 [system] INFO: connected to cloud 107.22.156.56:5683
+0000023100 [system] INFO: Cloud socket connected
+0000023100 [system] INFO: Starting handshake: presense_announce=1
+0000023102 [comm.sparkprotocol.handshake] INFO: Started: Receive nonce
+0000023213 [comm.sparkprotocol.handshake] INFO: Encrypting handshake nonce
+0000023305 [comm.sparkprotocol.handshake] INFO: Sending encrypted nonce
+0000023307 [comm.sparkprotocol.handshake] INFO: Receive key
+0000023426 [comm.sparkprotocol.handshake] INFO: Setting key
+0000023802 [comm.sparkprotocol.handshake] INFO: Sending HELLO message
+0000023805 [comm.sparkprotocol.handshake] INFO: Receiving HELLO response
+0000023918 [comm.sparkprotocol.handshake] INFO: Completed
+0000023918 [system] INFO: Send spark/hardware/max_binary event
+0000023919 [system] INFO: spark/hardware/ota_chunk_size event
+0000023920 [system] INFO: Send spark/device/last_reset event
+0000023928 [system] INFO: Send subscriptions
+0000023929 [comm.sparkprotocol] INFO: Sending TIME request
+0000023931 [system] INFO: Cloud connected
+0000024336 [comm.sparkprotocol] INFO: Received TIME response: 1498594547
+0000025244 [comm.sparkprotocol] INFO: Sending A describe message
+0000025462 [comm.sparkprotocol] INFO: Sending S describe message
+0000027336 [axtls] INFO: axTLS::begin()
+0000027337 [app] TRACE: begin(): This ignores debug options
+0000027337 [axtls] INFO: begin()
+0000053845 [axtls] INFO: Jupiter test #1
+0000053845 [axtls] INFO: axTLS::process()
+0000053845 [axtls] INFO: axTLS::doit()
+0000053845 [axtls] INFO: begin connect()
+0000053846 [axtls] INFO: host:jupyter.lccllc.info port:4443
+0000053851 [axtls] INFO: === CERTIFICATE ISSUED TO ===
+0000053851 [axtls] INFO: Common Name (CN):		localhost
+0000053852 [axtls] INFO: Organization (O):		axTLS Project
+0000053852 [axtls] INFO: === CERTIFICATE ISSUED BY ===
+0000053852 [axtls] INFO: Common Name (CN):		<Not Part Of Certificate>
+0000053853 [axtls] INFO: Organization (O):		axTLS Project Dodgy Certificate Authority
+0000053853 [axtls] INFO: Not Before:			Fri Dec 30 21:04:27 2016
+0000053854 [axtls] INFO: Not After:			Sun Sep  8 21:04:27 2030
+0000053854 [axtls] INFO: RSA bitsize:			1024
+0000053854 [axtls] INFO: Sig Type:			SHA1
+0000053855 [axtls] INFO: Assigning function callbacks ssl_ctx(0x20008ac8) f_send(0x80a6081) f_recv(0x80a
+0000053855 [axtls] INFO: connect() try 1
+0000053921 [axtls] INFO: ssl_client_new()
+0000053922 [axtls] INFO: writeParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_send(0x80a6081)
+0000053924 [axtls] INFO: S:sock->connected():1 sock->available():0
+0000053924 [axtls] INFO: Wanted to send 72 bytes, sent 72 bytes
+0000053925 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000053925 [axtls] INFO: Want 5 byte(s)
+0000053927 [axtls] INFO: R:sock->connected():1 sock->available():0
+0000053993 [axtls] INFO: Got 5 byte(s)
+0000053993 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000053994 [axtls] INFO: Want 74 byte(s)
+0000053994 [axtls] INFO: R:sock->connected():1 sock->available():123
+0000053994 [axtls] INFO: Got 74 byte(s)
+0000053994 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000053995 [axtls] INFO: Want 5 byte(s)
+0000053995 [axtls] INFO: R:sock->connected():1 sock->available():49
+0000053995 [axtls] INFO: Got 5 byte(s)
+0000053996 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000053996 [axtls] INFO: Want 2752 byte(s)
+0000053997 [axtls] INFO: R:sock->connected():1 sock->available():44
+0000053997 [axtls] INFO: Got 44 byte(s)
+0000053997 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000053998 [axtls] INFO: Want 2708 byte(s)
+0000053998 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000053998 [axtls] INFO: Got 128 byte(s)
+0000053999 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000053999 [axtls] INFO: Want 2580 byte(s)
+0000054000 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054000 [axtls] INFO: Got 128 byte(s)
+0000054000 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054001 [axtls] INFO: Want 2452 byte(s)
+0000054001 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054001 [axtls] INFO: Got 128 byte(s)
+0000054002 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054002 [axtls] INFO: Want 2324 byte(s)
+0000054003 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054003 [axtls] INFO: Got 128 byte(s)
+0000054003 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054004 [axtls] INFO: Want 2196 byte(s)
+0000054004 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054004 [axtls] INFO: Got 128 byte(s)
+0000054005 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054005 [axtls] INFO: Want 2068 byte(s)
+0000054006 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054006 [axtls] INFO: Got 128 byte(s)
+0000054006 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054007 [axtls] INFO: Want 1940 byte(s)
+0000054007 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054007 [axtls] INFO: Got 128 byte(s)
+0000054007 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054008 [axtls] INFO: Want 1812 byte(s)
+0000054008 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054008 [axtls] INFO: Got 128 byte(s)
+0000054009 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054009 [axtls] INFO: Want 1684 byte(s)
+0000054010 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054010 [axtls] INFO: Got 128 byte(s)
+0000054010 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054011 [axtls] INFO: Want 1556 byte(s)
+0000054011 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054011 [axtls] INFO: Got 128 byte(s)
+0000054012 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054012 [axtls] INFO: Want 1428 byte(s)
+0000054013 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054013 [axtls] INFO: Got 128 byte(s)
+0000054013 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054014 [axtls] INFO: Want 1300 byte(s)
+0000054014 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054014 [axtls] INFO: Got 128 byte(s)
+0000054015 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054015 [axtls] INFO: Want 1172 byte(s)
+0000054016 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054016 [axtls] INFO: Got 128 byte(s)
+0000054016 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054017 [axtls] INFO: Want 1044 byte(s)
+0000054017 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054017 [axtls] INFO: Got 128 byte(s)
+0000054018 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054018 [axtls] INFO: Want 916 byte(s)
+0000054019 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054019 [axtls] INFO: Got 128 byte(s)
+0000054019 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054020 [axtls] INFO: Want 788 byte(s)
+0000054020 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054020 [axtls] INFO: Got 128 byte(s)
+0000054021 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054021 [axtls] INFO: Want 660 byte(s)
+0000054022 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054022 [axtls] INFO: Got 128 byte(s)
+0000054022 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054023 [axtls] INFO: Want 532 byte(s)
+0000054023 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054023 [axtls] INFO: Got 128 byte(s)
+0000054023 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054024 [axtls] INFO: Want 404 byte(s)
+0000054024 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054024 [axtls] INFO: Got 128 byte(s)
+0000054025 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054025 [axtls] INFO: Want 276 byte(s)
+0000054026 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054026 [axtls] INFO: Got 128 byte(s)
+0000054026 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054027 [axtls] INFO: Want 148 byte(s)
+0000054027 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054027 [axtls] INFO: Got 128 byte(s)
+0000054028 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054028 [axtls] INFO: Want 20 byte(s)
+0000054029 [axtls] INFO: R:sock->connected():1 sock->available():29
+0000054030 [axtls] INFO: Got 20 byte(s)
+0000054037 [axtls] INFO: === CERTIFICATE ISSUED TO ===
+0000054037 [axtls] INFO: Common Name (CN):		*.lccllc.info
+0000054037 [axtls] INFO: Organization (O):		<Not Part Of Certificate>
+0000054038 [axtls] INFO: Basic Constraints:		
+0000054038 [axtls] INFO: CA:FALSE, pathlen:0
+0000054038 [axtls] INFO: Key Usage:			critical, Digital Signature, Key Encipherment
+0000054039 [axtls] INFO: Subject Alt Name:		*.lccllc.info lccllc.info 
+0000054039 [axtls] INFO: === CERTIFICATE ISSUED BY ===
+0000054039 [axtls] INFO: Common Name (CN):		RapidSSL SHA256 CA
+0000054040 [axtls] INFO: Organization (O):		GeoTrust Inc.
+0000054040 [axtls] INFO: Country (C):			US
+0000054040 [axtls] INFO: Not Before:			Wed Nov 30 00:00:00 2016
+0000054041 [axtls] INFO: Not After:			Sat Nov 30 23:59:59 2019
+0000054041 [axtls] INFO: RSA bitsize:			2048
+0000054041 [axtls] INFO: Sig Type:			SHA256
+0000054048 [axtls] INFO: === CERTIFICATE ISSUED TO ===
+0000054048 [axtls] INFO: Common Name (CN):		RapidSSL SHA256 CA
+0000054048 [axtls] INFO: Organization (O):		GeoTrust Inc.
+0000054049 [axtls] INFO: Country (C):			US
+0000054049 [axtls] INFO: Basic Constraints:		critical, CA:TRUE, pathlen:0
+0000054049 [axtls] INFO: Key Usage:			critical, Key Cert Sign, CRL Sign
+0000054050 [axtls] INFO: Subject Alt Name:		
+0000054050 [axtls] INFO: === CERTIFICATE ISSUED BY ===
+0000054050 [axtls] INFO: Common Name (CN):		GeoTrust Global CA
+0000054051 [axtls] INFO: Organization (O):		GeoTrust Inc.
+0000054051 [axtls] INFO: Country (C):			US
+0000054051 [axtls] INFO: Not Before:			Wed Dec 11 23:45:51 2013
+0000054052 [axtls] INFO: Not After:			Fri May 20 23:45:51 2022
+0000054052 [axtls] INFO: RSA bitsize:			2048
+0000054052 [axtls] INFO: Sig Type:			SHA256
+0000054053 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054053 [axtls] INFO: Want 5 byte(s)
+0000054055 [axtls] INFO: R:sock->connected():1 sock->available():9
+0000054056 [axtls] INFO: Got 5 byte(s)
+0000054056 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054056 [axtls] INFO: Want 4 byte(s)
+0000054058 [axtls] INFO: R:sock->connected():1 sock->available():4
+0000054059 [axtls] INFO: Got 4 byte(s)
+0000054115 [axtls] INFO: writeParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_send(0x80a6081)
+0000054116 [axtls] INFO: S:sock->connected():1 sock->available():0
+0000054116 [axtls] INFO: Wanted to send 267 bytes, sent 267 bytes
+0000054116 [axtls] INFO: writeParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_send(0x80a6081)
+0000054118 [axtls] INFO: S:sock->connected():1 sock->available():0
+0000054118 [axtls] INFO: Wanted to send 6 bytes, sent 6 bytes
+0000054121 [axtls] INFO: writeParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_send(0x80a6081)
+0000054123 [axtls] INFO: S:sock->connected():1 sock->available():0
+0000054123 [axtls] INFO: Wanted to send 85 bytes, sent 85 bytes
+0000054124 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054124 [axtls] INFO: Want 5 byte(s)
+0000054126 [axtls] INFO: R:sock->connected():1 sock->available():0
+0000054258 [axtls] INFO: Got 5 byte(s)
+0000054258 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054259 [axtls] INFO: Want 1 byte(s)
+0000054260 [axtls] INFO: R:sock->connected():1 sock->available():86
+0000054261 [axtls] INFO: Got 1 byte(s)
+0000054261 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054261 [axtls] INFO: Want 5 byte(s)
+0000054263 [axtls] INFO: R:sock->connected():1 sock->available():85
+0000054264 [axtls] INFO: Got 5 byte(s)
+0000054264 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054264 [axtls] INFO: Want 80 byte(s)
+0000054266 [axtls] INFO: R:sock->connected():1 sock->available():80
+0000054267 [axtls] INFO: Got 80 byte(s)
+0000054267 [axtls] INFO: connect():0
+0000054267 [axtls] INFO: j1 Connect(1)
+0000054268 [axtls] INFO: writeParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_send(0x80a6081)
+0000054270 [axtls] INFO: S:sock->connected():1 sock->available():0
+0000054270 [axtls] INFO: Wanted to send 133 bytes, sent 133 bytes
+0000054271 [axtls] INFO: successfully wrote to ssl_write()j1 write(): 75
+0000054271 [axtls] INFO: j1 start read()
+0000054372 [axtls] INFO: read:begin()readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081
+0000054372 [axtls] INFO: )
+0000054373 [axtls] INFO: Want 5 byte(s)
+0000054373 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054373 [axtls] INFO: Got 5 byte(s)
+0000054373 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054374 [axtls] INFO: Want 272 byte(s)
+0000054374 [axtls] INFO: R:sock->connected():1 sock->available():123
+0000054374 [axtls] INFO: Got 123 byte(s)
+0000054375 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054375 [axtls] INFO: Want 149 byte(s)
+0000054376 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054376 [axtls] INFO: Got 128 byte(s)
+0000054376 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054377 [axtls] INFO: Want 21 byte(s)
+0000054377 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054377 [axtls] INFO: Got 21 byte(s)
+0000054379 [axtls] INFO: read(208)
+0000054380 [axtls] INFO: web>HTTP/1.1 404 Not Found
+0000054380 [axtls] INFO: web>Date: Tue, 27 Jun 2017 20:16:18 GMT
+0000054382 [axtls] INFO: web>Server: Apache/2.4.16 (Fedora) OpenSSL/1.0.1k-fips mod_fcgid/2.3.9 PHP/5.6.
+0000054383 [axtls] INFO: web>Content-Length: 202
+0000054384 [axtls] INFO: web>Content-Type: text/html; charset=iso-8859-1
+0000054384 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054385 [axtls] INFO: Want 5 byte(s)
+0000054385 [axtls] INFO: R:sock->connected():1 sock->available():107
+0000054385 [axtls] INFO: Got 5 byte(s)
+0000054386 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054386 [axtls] INFO: Want 256 byte(s)
+0000054387 [axtls] INFO: R:sock->connected():1 sock->available():102
+0000054387 [axtls] INFO: Got 102 byte(s)
+0000054387 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054388 [axtls] INFO: Want 154 byte(s)
+0000054388 [axtls] INFO: R:sock->connected():1 sock->available():128
+0000054388 [axtls] INFO: Got 128 byte(s)
+0000054388 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000054389 [axtls] INFO: Want 26 byte(s)
+0000054390 [axtls] INFO: R:sock->connected():1 sock->available():26
+0000054391 [axtls] INFO: Got 26 byte(s)
+0000054392 [axtls] INFO: read(202)
+0000054393 [axtls] INFO: web><!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+0000054394 [axtls] INFO: web><html><head>
+0000054394 [axtls] INFO: web><title>404 Not Found</title>
+0000054395 [axtls] INFO: web></head><body>
+0000054395 [axtls] INFO: web><h1>Not Found</h1>
+0000054397 [axtls] INFO: web><p>The requested URL /test was not found on this server.</p>
+0000054397 [axtls] INFO: web></body></html>
+0000059347 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000059347 [axtls] INFO: Want 5 byte(s)
+0000059347 [axtls] INFO: R:sock->connected():1 sock->available():69
+0000059348 [axtls] INFO: Got 5 byte(s)
+0000059348 [axtls] INFO: readParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_recv(0x80a6081)
+0000059348 [axtls] INFO: Want 64 byte(s)
+0000059349 [axtls] INFO: R:sock->connected():1 sock->available():64
+0000059349 [axtls] INFO: Got 64 byte(s)
+0000059350 [axtls] INFO: writeParticle() ssl(0x20009fa0) ssl_ctx(0x20008ac8) f_send(0x80a6081)
+0000059350 [axtls] INFO: S:sock->connected():0 sock->available():0
+0000059351 [axtls] INFO: read:end(-3)j1 read(): -3
+0000059352 [axtls] INFO: j1 start read()
+0000059352 [axtls] INFO: read:begin()bi_free: active_count went negative - double-freed bigint?
+Serial connection closed.  Attempting to reconnect...
+Serial monitor opened successfully:
+0000000558 [hal.wlan] INFO: Using internal antenna
+0000000561 [system] INFO: ARM_WLAN_WD 1
+0000022661 [system] INFO: ARM_WLAN_WD 2
+0000022661 [hal.wlan] INFO: Bringing WiFi interface up with DHCP
+0000022713 [system] INFO: CLR_WLAN_WD 1, DHCP success
+0000022715 [system] INFO: Cloud: connecting
+0000022715 [system] INFO: Read Server Address = type:1,domain:device.spark.io
+0000022806 [system] INFO: Resolved host device.spark.io to 52.90.147.116
+0000022921 [system] INFO: connected to cloud 52.90.147.116:5683
+0000022921 [system] INFO: Cloud socket connected
+0000022921 [system] INFO: Starting handshake: presense_announce=1
+0000022921 [comm.sparkprotocol.handshake] INFO: Started: Receive nonce
+0000023032 [comm.sparkprotocol.handshake] INFO: Encrypting handshake nonce
+0000023124 [comm.sparkprotocol.handshake] INFO: Sending encrypted nonce
+0000023126 [comm.sparkprotocol.handshake] INFO: Receive key
+0000023248 [comm.sparkprotocol.handshake] INFO: Setting key
+0000023624 [comm.sparkprotocol.handshake] INFO: Sending HELLO message
+0000023627 [comm.sparkprotocol.handshake] INFO: Receiving HELLO response
+0000023744 [comm.sparkprotocol.handshake] INFO: Completed
+0000023744 [system] INFO: Send spark/hardware/max_binary event
+0000023745 [system] INFO: spark/hardware/ota_chunk_size event
+0000023751 [system] INFO: Send subscriptions
+0000023752 [comm.sparkprotocol] INFO: Sending TIME request
+0000023754 [system] INFO: Cloud connected
+0000024159 [comm.sparkprotocol] INFO: Received TIME response: 1498594607
+0000025067 [comm.sparkprotocol] INFO: Sending A describe message
+0000025285 [comm.sparkprotocol] INFO: Sending S describe message
+0000027159 [axtls] INFO: axTLS::begin()
+0000027160 [app] TRACE: begin(): This ignores debug options
+0000027160 [axtls] INFO: begin()
