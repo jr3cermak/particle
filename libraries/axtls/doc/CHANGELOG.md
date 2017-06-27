@@ -2,6 +2,9 @@
 
 ## 2017-06-27
 
+* Increased log buffer limit from 80 to 256 for testing.  This gives
+us clearer log statements.  Small adjustment to detecting when we
+have a full line or line feeds in debugger_callback() example.
 * Still missing some line feeds in debugging output.
 * Will add another `option` to enable/disable pointer display.  Some
   of these can now be hidden.

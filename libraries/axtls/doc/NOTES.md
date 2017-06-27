@@ -112,10 +112,11 @@ debug_tls() called debugger_callback() in your main program
 with the .ino extension.
 
 You can adjust the buffer size with the #define option called
-CONFIG_DEBUG_BUFFER_SIZE.  
+CONFIG_DEBUG_BUFFER_SIZE.  It is currently set to 256 which
+might be excessive.
 
 For Log.trace() to work you need to ensure all log levels
-are reported:
+are enabled:
 `SerialLogHandler logHandler(LOG_LEVEL_ALL);`
 
 # Classes

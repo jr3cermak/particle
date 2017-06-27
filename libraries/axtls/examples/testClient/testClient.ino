@@ -52,7 +52,7 @@ void debugger_callback(const char* fmt, ...) {
 
   int buflen = strlen(buf);
 
-  //myLog.trace("dc():%d",mptr);
+  //myLog.trace("dc():pv=%d in=%d", mptr, buflen);
   for (int i = 0; i < buflen; i++) {
     ch = buf[i];
     if (ch == 10 || ch == 13 || mptr == CONFIG_DEBUG_BUFFER_SIZE - 1) {
@@ -60,11 +60,12 @@ void debugger_callback(const char* fmt, ...) {
         myLog.info(msg);
       }
       memset(msg, 0, CONFIG_DEBUG_BUFFER_SIZE);
+      if (ch == 10 || ch == 13) {
+        mptr = 0;
+      }
       if (mptr == CONFIG_DEBUG_BUFFER_SIZE - 1) {
         msg[0] = ch;
         mptr = 1;
-      } else {
-        mptr = 0;
       }
     } else {
       msg[mptr] = ch;
