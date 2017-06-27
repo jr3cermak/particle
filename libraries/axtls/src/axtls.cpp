@@ -54,7 +54,7 @@ int axTLSClient::read() {
   unsigned char ch;
   int nb;
 
-  debug_tls("read:begin()");
+  debug_tls("read:begin()\n");
 
   // Wait a timeout or a valid response
   while (ctimeout < CONFIG_HTTP_TIMEOUT and res == 0) {
@@ -77,7 +77,7 @@ int axTLSClient::read() {
             }
           }
           if (bptr > 0) {
-            debug_tls("web>%s",(const char*)buf);
+            debug_tls("web>%s\n",(const char*)buf);
             bptr = 0;
             memset(buf, 0, sizeof(buf));
           }
@@ -104,7 +104,7 @@ int axTLSClient::read() {
       _client.stop();
       _connected = false;
   }
-  debug_tls("read:end(%d)",res);
+  debug_tls("read:end(%d)\n",res);
   return res;
 }
 
@@ -159,6 +159,8 @@ int axTLS::recvTLS(void *ssl, uint8_t *in_data, int in_len) {
 int axTLS::sendTLS(void *ssl, uint8_t *out_data, int out_len) {
   int ret = 0;
 
+  debug_tls("Want to send %d byte(s)\n", out_len);
+
   // We have to extract the _client pointer
   SSL *real_ssl = (SSL *)ssl;
   TCPClient *sock = (TCPClient *) real_ssl->ssl_ctx->_client;
@@ -169,12 +171,13 @@ int axTLS::sendTLS(void *ssl, uint8_t *out_data, int out_len) {
     ret = sock->write(out_data, out_len);
     sock->flush();
   } else {
+    debug_tls("sendTLS(): no connection\n", ret);
     return -1;
   }
 
   // Allow the WiFi module to catch up
   Particle.process();
-  debug_tls("Wanted to send %d bytes, sent %d bytes\n", out_len, ret);
+  debug_tls("Sent %d byte(s)\n", ret);
 
   return ret;
 }
@@ -187,13 +190,14 @@ int axTLSClient::write(uint8_t *msg) {
     res = ssl_write(ssl, msg, strlen((char *)msg));
 
     if (res < 0) {
+      debug_tls("ssl_write() failed:%d\n", res);
       ssl_free(ssl);
       ssl_ctx_free(ssl_ctx);
       _client.stop();
       _connected = false;
       res = -1;
     } else {
-      debug_tls("successfully wrote to ssl_write()");
+      debug_tls("Wrote to ssl_write()\n");
     }
   }
   return res;
