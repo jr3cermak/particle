@@ -1,0 +1,103 @@
+#!/bin/bash
+#set -x
+
+# This script provides the quickest means to convert code
+# from the original wolfssl source tree to code that makes
+# up the ported Particle wolfssl library.
+##
+
+# Save the operating ROOT directory
+##
+ROOT=`pwd`
+PARTICLE_PROJECT_DIR=/Users/cermak/Particle/libraries
+
+# Define a main source directory (SRC)
+# Define the target Particle project directory (PPD)
+# New code not found in the source directory (ORG)
+SRC=${ROOT}/wolfssl-3.11.0
+ORG=${ROOT}/wolfssl-custom
+PPD=${PARTICLE_PROJECT_DIR}/wolfssl/src
+
+# Special patch files
+##
+PATCHDIR=${ROOT}/wolfssl-patches
+
+# Original particle project tree
+##
+ORIG=""
+
+# wolfssl provides a way to restructure the source code
+# into the Arduino IDE format.  This will give us a 
+# head start
+##
+cd ${SRC}
+cd IDE/ARDUINO
+./wolfssl-arduino.sh
+
+# Copy and rename main source
+##
+cd ${SRC}
+for i in $(ls *.c); do
+  cp ${i} ${PPD}/${i}pp
+done
+
+# STOP HERE -- CODE FROM ANOTHER PORTING PROJECT
+## 
+
+# Do the same for headers
+for i in $(ls *.h); do
+  cp ${i} ${PPD}/${i}
+done
+
+# Copy and rename ssl
+## 
+cd ${SRC}/ssl
+for i in $(ls *.c); do
+  cp ${i} ${PPD}/${i}pp
+done
+for i in $(ls *.h); do
+  cp ${i} ${PPD}/${i}
+done
+# Copy and rename custom code
+## 
+cd ${ORG}
+for i in $(ls *.c); do
+  cp ${i} ${PPD}/${i}pp
+done
+for i in $(ls *.h); do
+  cp ${i} ${PPD}/${i}
+done
+
+# Recompute patches
+cd ${PATCHDIR}
+for i in $(ls *.cpp *.h); do
+  if [ -e "${i}" -a -e "${i}.orig" ];
+  then
+    diff -u ${i}.orig ${i} > ${i}.patch
+  fi
+done
+
+# Do special patching in final directory
+##
+echo "Performing patching on specific files:"
+cd ${PPD}
+for i in $(ls *.cpp *.h); do
+  if [ -e "${PATCHDIR}/${i}.patch" ];
+  then
+    echo -n "  ";
+    patch -p0 < ${PATCHDIR}/${i}.patch
+  fi
+done
+
+# Make some sweeping code changes to facilitate port
+##
+# printf -> //printf
+##
+cd ${PPD}
+for i in $(ls *.cpp *.h); do
+  sed -i .x -e '1,$s%^\(.*\)[[:blank:]]printf%\1//printf%g' $i
+  if [ -e "${i}.x" ];
+  then
+    rm ${i}.x
+  fi
+done
