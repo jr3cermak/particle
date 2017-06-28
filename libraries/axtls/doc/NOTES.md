@@ -81,6 +81,8 @@ Creating new defines:
 
 * CONFIG_PLATFORM_PARTICLE
 * CONFIG_SSL_CLIENT_ONLY
+* CONFIG_SSL_CLIENT_INPUT_BUFFER 129
+  * Default size of I/O buffer for TCPClient is 128 + NULL
 
 If you want both client and server, define CONFIG_SSL_ENABLE_CLIENT and
 !CONFIG_SSL_SERVER_ONLY.

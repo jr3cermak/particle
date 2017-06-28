@@ -1361,6 +1361,7 @@ int basic_read(SSL *ssl, uint8_t **in_data)
     ssl->got_bytes += read_len;
     ssl->bm_read_index += read_len;
 
+    debug_tls("read %d / %d\n", ssl->got_bytes, ssl->need_bytes);
     /* haven't quite got what we want, so try again later */
     if (ssl->got_bytes < ssl->need_bytes)
         return SSL_OK;
@@ -1497,6 +1498,7 @@ error:
     if (ret < SSL_OK && in_data)/* if all wrong, then clear this buffer ptr */
         *in_data = NULL;
 
+    debug_tls("basic_read():end(%d)\n", ret);
     return ret;
 }
 
