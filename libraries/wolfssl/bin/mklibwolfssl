@@ -41,13 +41,13 @@ for i in $(ls *.c); do
   cp ${i} ${PPD}/${i}pp
 done
 
+# Copy header structures into src/
+##
+cp -a wolfssl ${PPD}/
+
 # STOP HERE -- CODE FROM ANOTHER PORTING PROJECT
 ## 
-
-# Do the same for headers
-for i in $(ls *.h); do
-  cp ${i} ${PPD}/${i}
-done
+exit
 
 # Copy and rename ssl
 ## 
