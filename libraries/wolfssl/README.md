@@ -16,10 +16,10 @@ After the library is done you can upload it with `particle library upload` or `U
 
 See the [examples](examples) folder for more details.
 
-usage.ino: will only test instantiation of the library and not
-exercise it at all.
+[usage.ino](https://github.com/jr3cermak/particle/blob/master/libraries/wolfssl/examples/usage/usage.ino):
+will only test instantiation of the library and not exercise it at all.
 
-A working example is called wolfssl_client.ino  You need to adjust the 
+[wolfssl_client.ino](https://github.com/jr3cermak/particle/blob/master/libraries/wolfssl/examples/wolfssl_client/wolfssl_client.ino): Client test.  You need to adjust the 
 host, port and/or msg to obtain the correct response.  A small delay
 is needed to allow the server to respond otherwise the response could
 be skipped.
@@ -27,10 +27,11 @@ be skipped.
 ## Documentation
 
 See [wolfssl](https://www.wolfssl.com) for more concise documentation
-on the library.
+about the library.
 
 If you are starting from wolfssl source, try using the mklibwolfssl script
-to setup the initial source and then apply changes to the library.
+in the [bin](bin) directory to setup the initial source and then apply
+changes to the library.
 
 ## Contributing
 
