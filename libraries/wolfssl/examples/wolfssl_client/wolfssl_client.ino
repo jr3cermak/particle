@@ -19,24 +19,41 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1335, USA
  */
 
-
-#include <wolfssl.h>
 #include <wolfssl/ssl.h>
-//#include <Ethernet.h>
 
+/* This is where you define the host you wish to connect to...
+ *
+ * host[] : hostname or IP address
+ * port   : typically 443 or may be some other unique port with HTTPS
+ */
 //const char host[] = "192.168.1.148"; // server to connect to
 const char host[] = "jupyter.lccllc.info"; // server to connect to
 int port = 4443; // port on server to connect to
 
-int EthernetSend(WOLFSSL* ssl, char* msg, int sz, void* ctx);
-int EthernetReceive(WOLFSSL* ssl, char* reply, int sz, void* ctx);
-int reconnect = 10;
-
+/* This is a variable for sending to the remote server
+ *
+ * msg : message buffer itself
+ * msgSz : finished size of the buffer
+ */
 char msg[400]      = { 0 };
 int msgSz          = 0;
 
-//EthernetClient client;
+/* This determines the number of time to attempt to make
+ * a connection to the remote server
+ */
+int reconnect = 10;
+
+/* These are callback functions to enable the library to
+ * carry out read/write operations with the Particle device.
+ */
+int EthernetSend(WOLFSSL* ssl, char* msg, int sz, void* ctx);
+int EthernetReceive(WOLFSSL* ssl, char* reply, int sz, void* ctx);
+
 TCPClient client;
+
+/*
+ * This creates a ssl session context for TLS/SSL.
+ */
 
 WOLFSSL_CTX* ctx = 0;
 WOLFSSL* ssl = 0;
@@ -68,6 +85,7 @@ void setup() {
   return;
 }
 
+// Callback function for sending data to the remote server
 int EthernetSend(WOLFSSL* ssl, char* msg, int sz, void* ctx) {
   int sent = 0;
 
@@ -76,6 +94,7 @@ int EthernetSend(WOLFSSL* ssl, char* msg, int sz, void* ctx) {
   return sent;
 }
 
+// Callback function for reading data from the remote server
 int EthernetReceive(WOLFSSL* ssl, char* reply, int sz, void* ctx) {
   int ret = 0;
 

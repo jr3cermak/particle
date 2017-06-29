@@ -55,7 +55,13 @@ with `TCPClient client;`
 
 Use `WOLFSSL_PARTICLE_ARM` to mark Particle specific items.
 
-TODO: Need to define XGMTIME()
+Need to define the following routines with use of `TIME_OVERRIDE`.
+
+XTIME(): simply plug into the device time
+
+XGMTIME(): Pulled code from newlib libc.
+
+* Need to use pieces of gmtime_r() and portions of local.h
 
 ### src/misc.cpp
 
