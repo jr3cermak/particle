@@ -90,6 +90,8 @@
 
 /* Uncomment next line if using STM32F2 */
 /* #define WOLFSSL_STM32F2 */
+//#define SINGLE_THREADED
+//#define NO_WRITEV
 
 /* Uncomment next line if using QL SEP settings */
 /* #define WOLFSSL_QL */
@@ -98,7 +100,7 @@
 /* #define WOLFSSL_EROAD */
 
 /* Uncomment next line if building for IAR EWARM */
-/* #define WOLFSSL_IAR_ARM */
+#define WOLFSSL_IAR_ARM
 
 /* Uncomment next line if building for Rowley CrossWorks ARM */
 /* #define WOLFSSL_ROWLEY_ARM */
@@ -196,6 +198,7 @@
     #define NO_WRITEV
     #define WOLFSSL_USER_IO
     #define BENCH_EMBEDDED
+    #define NO_OLD_RNGNAME
 #endif
 
 #ifdef MICROCHIP_PIC32

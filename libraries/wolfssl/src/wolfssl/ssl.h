@@ -26,6 +26,7 @@
 #ifndef WOLFSSL_SSL_H
 #define WOLFSSL_SSL_H
 
+#include "application.h"
 
 /* for users not using preprocessor flags*/
 #include <wolfssl/wolfcrypt/settings.h>
