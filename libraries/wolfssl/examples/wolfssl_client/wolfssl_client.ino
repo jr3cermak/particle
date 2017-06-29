@@ -80,7 +80,7 @@ void setup() {
   // Create test message
   sprintf(msg, "GET / HTTP/1.1\r\n");
   msgSz = sprintf(msg, "%sHost: jupyter.lccllc.info\r\nUser-Agent: %s/%s\r\n\r\n", 
-    msg, "axTLS", "2.3.1a");
+    msg, "wolfssl", "3.11.2");
   
   return;
 }
