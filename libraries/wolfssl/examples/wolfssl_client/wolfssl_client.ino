@@ -27,8 +27,8 @@
  * port   : typically 443 or may be some other unique port with HTTPS
  */
 //const char host[] = "192.168.1.148"; // server to connect to
-const char host[] = "jupyter.lccllc.info"; // server to connect to
-int port = 4443; // port on server to connect to
+const char host[] = "www.ssllabs.com"; // server to connect to
+int port = 443; // port on server to connect to
 
 /* This is a variable for sending to the remote server
  *
@@ -78,9 +78,9 @@ void setup() {
   wolfSSL_SetIORecv(ctx, EthernetReceive);
 
   // Create test message
-  sprintf(msg, "GET / HTTP/1.1\r\n");
-  msgSz = sprintf(msg, "%sHost: jupyter.lccllc.info\r\nUser-Agent: %s/%s\r\n\r\n", 
-    msg, "wolfssl", "3.11.2");
+  sprintf(msg, "GET /test HTTP/1.1\r\n");
+  msgSz = sprintf(msg, "%sHost: %s\r\nUser-Agent: %s/%s\r\n\r\n", 
+    msg, host, "wolfssl", "3.11.2");
   
   return;
 }
