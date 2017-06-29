@@ -22,7 +22,7 @@
 
 #include <wolfssl.h>
 #include <wolfssl/ssl.h>
-#include <Ethernet.h>
+//#include <Ethernet.h>
 
 const char host[] = "192.168.1.148"; // server to connect to
 int port = 11111; // port on server to connect to
@@ -31,7 +31,8 @@ int EthernetSend(WOLFSSL* ssl, char* msg, int sz, void* ctx);
 int EthernetReceive(WOLFSSL* ssl, char* reply, int sz, void* ctx);
 int reconnect = 10;
 
-EthernetClient client;
+//EthernetClient client;
+TCPClient client;
 
 WOLFSSL_CTX* ctx = 0;
 WOLFSSL* ssl = 0;

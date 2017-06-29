@@ -26,19 +26,36 @@ My suggestion is use one of the ARM settings.  The
 header file.  `NO_OLD_RNGNAME` avoids a redefinition conflict
 with the Particle firmware that uses `RNG`.
 
+`TIME_OVERRIDE` gets around this nasty symbol problem.
+
+`/usr/local/gcc-arm-embedded/bin/../lib/gcc/arm-none-eabi/4.8.4/../../../../arm-none-eabi/lib/armv7-m/libg_s.a(lib_a-gettimeofdayr.o): In function `_gettimeofday_r':
+gettimeofdayr.c:(.text._gettimeofday_r+0xe): undefined reference to `_gettimeofday'`
+
+Final defines:
+
 ```
 #define WOLFSSL_IAR_ARM
+#define WOLFSSL_PARTICLE_ARM
 #define NO_OLD_RNGNAME
+#define TIME_OVERRIDE
 ```
 
 # Code changes
 
-## Example
+## example/wolfssl_client
 
-### wolfssl_client.cpp
+### wolfssl_client.ino
 
+Comment out `#include <Ethernet.h>` and replace `EthernetClient client;`
+with `TCPClient client;`
 
 ## Base code
+
+### internal.h / internal.cpp
+
+Use `WOLFSSL_PARTICLE_ARM` to mark Particle specific items.
+
+TODO: Need to define XGMTIME()
 
 ### src/misc.cpp
 

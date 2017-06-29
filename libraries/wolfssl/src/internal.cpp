@@ -22126,6 +22126,23 @@ int wolfSSL_AsyncPush(WOLFSSL* ssl, WC_ASYNC_DEV* asyncDev, word32 flags)
 
 #endif /* WOLFSSL_ASYNC_CRYPT */
 
+#ifdef WOLFSSL_PARTICLE_ARM
+
+#ifdef TIME_OVERRIDES
+
+time_t XTIME(time_t * timer)
+{
+    uint32_t hal_t = HAL_Timer_Milliseconds();  // get uptime in nanoseconds
+
+    return hal_t / 1000; // convert to seconds
+}
+
+// TODO!
+struct tm* XGMTIME(const time_t* timer, struct tm* tmp) {}
+
+#endif
+
+#endif /* WOLFSSL_PARTICLE_ARM */
 
 #undef ERROR_OUT
 

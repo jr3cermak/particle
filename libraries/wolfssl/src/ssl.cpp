@@ -9645,7 +9645,6 @@ int wolfSSL_set_compression(WOLFSSL* ssl)
 
             if (gettimeofday(&startTime, 0) < 0)
                 ERR_OUT(GETTIME_ERROR);
-
             /* use setitimer to simulate getitimer, init 0 myTimeout */
             myTimeout.it_interval.tv_sec  = 0;
             myTimeout.it_interval.tv_usec = 0;

@@ -101,6 +101,8 @@
 
 /* Uncomment next line if building for IAR EWARM */
 #define WOLFSSL_IAR_ARM
+//#define WOLFSSL_CALLBACKS
+#define WOLFSSL_PARTICLE_ARM
 
 /* Uncomment next line if building for Rowley CrossWorks ARM */
 /* #define WOLFSSL_ROWLEY_ARM */
@@ -199,6 +201,7 @@
     #define WOLFSSL_USER_IO
     #define BENCH_EMBEDDED
     #define NO_OLD_RNGNAME
+    #define TIME_OVERRIDES
 #endif
 
 #ifdef MICROCHIP_PIC32

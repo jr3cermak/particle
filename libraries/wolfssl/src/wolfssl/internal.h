@@ -3297,7 +3297,6 @@ WOLFSSL_LOCAL void FreeKey(WOLFSSL* ssl, int type, void** pKey);
                                         word32 flags);
 #endif
 
-
 #ifdef __cplusplus
     }  /* extern "C" */
 #endif
