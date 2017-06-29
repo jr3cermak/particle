@@ -24,12 +24,16 @@
 #include <wolfssl/ssl.h>
 //#include <Ethernet.h>
 
-const char host[] = "192.168.1.148"; // server to connect to
-int port = 11111; // port on server to connect to
+//const char host[] = "192.168.1.148"; // server to connect to
+const char host[] = "jupyter.lccllc.info"; // server to connect to
+int port = 4443; // port on server to connect to
 
 int EthernetSend(WOLFSSL* ssl, char* msg, int sz, void* ctx);
 int EthernetReceive(WOLFSSL* ssl, char* reply, int sz, void* ctx);
 int reconnect = 10;
+
+char msg[400]      = { 0 };
+int msgSz          = 0;
 
 //EthernetClient client;
 TCPClient client;
@@ -55,6 +59,11 @@ void setup() {
   wolfSSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, 0);
   wolfSSL_SetIOSend(ctx, EthernetSend);
   wolfSSL_SetIORecv(ctx, EthernetReceive);
+
+  // Create test message
+  sprintf(msg, "GET / HTTP/1.1\r\n");
+  msgSz = sprintf(msg, "%sHost: jupyter.lccllc.info\r\nUser-Agent: %s/%s\r\n\r\n", 
+    msg, "axTLS", "2.3.1a");
   
   return;
 }
@@ -82,8 +91,6 @@ void loop() {
   int input          = 0;
   int sent           = 0;
   int total_input    = 0;
-  char msg[32]       = "hello wolfssl!";
-  int msgSz          = (int)strlen(msg);
   char errBuf[80];
   char reply[80];
   WOLFSSL_CIPHER* cipher;
@@ -105,12 +112,13 @@ void loop() {
       Serial.print("SSL version is ");
       Serial.println(wolfSSL_get_version(ssl));
       
-
-      
       if ((wolfSSL_write(ssl, msg, strlen(msg))) == msgSz) {
       cipher = wolfSSL_get_current_cipher(ssl);
       Serial.print("SSL cipher suite is ");
       Serial.println(wolfSSL_CIPHER_get_name(cipher));                
+        delay(1000);
+        Serial.print("client.available():");
+        Serial.println(client.available());
         Serial.print("Server response: ");
         while (client.available() || wolfSSL_pending(ssl)) {
           input = wolfSSL_read(ssl, reply, sizeof(reply) - 1);
