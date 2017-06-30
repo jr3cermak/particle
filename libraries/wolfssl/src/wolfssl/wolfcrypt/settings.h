@@ -89,9 +89,17 @@
 /* #define FREESCALE_KSDK_FREERTOS */
 
 /* Uncomment next line if using STM32F2 */
-/* #define WOLFSSL_STM32F2 */
+/* Can't get this to compile cleanly, the headers are accepted, but
+   the symbols are missing
+
+../../../build/target/user/platform-6-mlibuser.a(aes.o): In function `wc_AesCbcEncrypt':
+src/aes.cpp:2189: undefined reference to `CRYP_KeyStructInit'
+....
+*/
+//#define WOLFSSL_STM32F2
 //#define SINGLE_THREADED
 //#define NO_WRITEV
+//#define WOLFSSL_USER_IO
 
 /* Uncomment next line if using QL SEP settings */
 /* #define WOLFSSL_QL */
@@ -101,8 +109,19 @@
 
 /* Uncomment next line if building for IAR EWARM */
 #define WOLFSSL_IAR_ARM
-//#define WOLFSSL_CALLBACKS
+#define TIME_OVERRIDES
 #define WOLFSSL_PARTICLE_ARM
+// Disable some encryption methods
+#define NO_SHA512
+#define NO_DSA
+#define NO_HC128
+#define NO_RC4
+#define NO_MD4
+#define NO_MD5
+#define NO_DES3
+#define NO_OLD_TLS
+#define NO_SESSION_CACHE
+#define USE_CERT_BUFFERS_1024
 
 /* Uncomment next line if building for Rowley CrossWorks ARM */
 /* #define WOLFSSL_ROWLEY_ARM */
@@ -201,7 +220,6 @@
     #define WOLFSSL_USER_IO
     #define BENCH_EMBEDDED
     #define NO_OLD_RNGNAME
-    #define TIME_OVERRIDES
 #endif
 
 #ifdef MICROCHIP_PIC32
