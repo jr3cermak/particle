@@ -1,5 +1,7 @@
 // This will only exercise the instatiation of the library.
 // It will not make a connection to a remote server.
+// See: wolfssl/wolfcrypt/settings.h for additional library
+// settings to turn on and off as #define statements.
 
 #include <wolfssl/ssl.h>
 
