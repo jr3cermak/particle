@@ -6,6 +6,7 @@
 //   http://en.wikipedia.org/wiki/Secure_Remote_Password_protocol
 //   http://en.wikipedia.org/wiki/TLS-SRP
 //   https://github.com/openssl/openssl/tree/master/test
+//   https://www.example-code.com/cpp/encryption.asp
 // Need to set defines in /wolfssl/wolfcrypt/settings.h : 
 //    // #define NO_SHA512  -- comment out
 //    #define WOLFSSL_SHA512  -- add SHA512
