@@ -1,4 +1,11 @@
-// This will only test the initialization and signature creation for N = 3072, g = 5.
+// This will only test the initialization and signature creation for 
+// SRP -- secure remote password
+//   N = 3072, g = 5.
+// REF:
+//   https://matthewarcus.wordpress.com/2014/05/10/srp-in-openssl/
+//   http://en.wikipedia.org/wiki/Secure_Remote_Password_protocol
+//   http://en.wikipedia.org/wiki/TLS-SRP
+//   https://github.com/openssl/openssl/tree/master/test
 // Need to set defines in /wolfssl/wolfcrypt/settings.h : 
 //    // #define NO_SHA512  -- comment out
 //    #define WOLFSSL_SHA512  -- add SHA512
