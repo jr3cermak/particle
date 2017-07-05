@@ -4,3 +4,5 @@ private.h
 *.tmp
 *.swp
 err.txt
+
+.DS_Store
