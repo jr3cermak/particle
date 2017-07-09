@@ -4,9 +4,12 @@
 
 #include <wolfssl/ssl.h>
 #include <wolfmqtt/wolfMQTT.h>
+#include <Private.h>
 
 /* Configuration */
-#define DEFAULT_MQTT_HOST       "iot.eclipse.org" /* broker.hivemq.com */
+/* Moved to Private.h so we don't publish live stuff on github */
+/*
+#define DEFAULT_MQTT_HOST       "some.host.name" //broker.hivemq.com 
 #define DEFAULT_CMD_TIMEOUT_MS  30000
 #define DEFAULT_CON_TIMEOUT_MS  5000
 #define DEFAULT_MQTT_QOS        MQTT_QOS_0
@@ -18,6 +21,7 @@
 #define MAX_BUFFER_SIZE         1024
 #define TEST_MESSAGE            "test"
 #define TEST_TOPIC_COUNT        2
+*/
 
 /* Local Variables */
 #ifdef ENABLE_MQTT_TLS
@@ -26,8 +30,8 @@ static WOLFSSL_CTX* mCtx       = 0;
 static WOLFSSL* mSsl           = 0;
 static const char* mTlsFile    = NULL;
 #endif
-static int16_t mPort            = 0;
-static const char* mHost       = "iot.eclipse.org";
+static int16_t mPort           = 0;
+static const char* mHost       = DEFAULT_MQTT_HOST;
 static int mStopRead    = 0;
 
 TCPClient ethClient;
