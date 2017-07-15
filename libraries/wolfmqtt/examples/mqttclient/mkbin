@@ -31,16 +31,19 @@ done
 
 # Local files
 ##
-LOCAL_FILES=""
+LOCAL_FILES="Private.h"
 
 # Extra libraries
 ##
-WOLFSSL_LIB="`find ../../../wolfssl/src`"
-WOLFMQTT_LIB="`find ../../src`"
+WOLFSSL_LIB="`find ../../../wolfssl/src -type f`"
+WOLFMQTT_LIB="`find ../../src -type f`"
 
 # Bring all the file together in a single list
 ##
 FILES="${LOCAL_FILES} ${WOLFMQTT_LIB} ${WOLFSSL_LIB}"
+
+#echo $FILES
+#exit
 
 if [ "${DO_BUILD}" == "1" ]; then
 

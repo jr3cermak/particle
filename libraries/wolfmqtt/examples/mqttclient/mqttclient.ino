@@ -1,10 +1,10 @@
 /* Uncomment this to enable TLS support */
 /* Make sure and include the wolfSSL library */
-//#define ENABLE_MQTT_TLS
+#define ENABLE_MQTT_TLS
 
+#include <Private.h>
 #include <wolfssl/ssl.h>
 #include <wolfmqtt/wolfMQTT.h>
-#include <Private.h>
 
 /* Configuration */
 /* Moved to Private.h so we don't publish live stuff on github */
@@ -23,6 +23,7 @@
 #define TEST_TOPIC_COUNT        2
 */
 
+
 /* Local Variables */
 #ifdef ENABLE_MQTT_TLS
 static WOLFSSL_METHOD* mMethod = 0;
@@ -30,7 +31,7 @@ static WOLFSSL_CTX* mCtx       = 0;
 static WOLFSSL* mSsl           = 0;
 static const char* mTlsFile    = NULL;
 #endif
-static int16_t mPort           = 0;
+static int16_t mPort           = 8443;
 static const char* mHost       = DEFAULT_MQTT_HOST;
 static int mStopRead    = 0;
 
@@ -79,13 +80,13 @@ static int mqttclient_tls_verify_cb(int preverify, WOLFSSL_X509_STORE_CTX* store
 {
   char buffer[WOLFSSL_MAX_ERROR_SZ];
 
-  printf("MQTT TLS Verify Callback: PreVerify %d, Error %d (%s)\n", preverify,
+  Serial.printf("MQTT TLS Verify Callback: PreVerify %d, Error %d (%s)\n", preverify,
          store->error, wolfSSL_ERR_error_string(store->error, buffer));
-  printf("  Subject's domain name is %s\n", store->domain);
+  Serial.printf("  Subject's domain name is %s\n", store->domain);
 
   /* Allowing to continue */
   /* Should check certificate and return 0 if not okay */
-  printf("  Allowing cert anyways\n");
+  Serial.print("  Allowing cert anyways\n");
 
   return 1;
 }
@@ -93,7 +94,7 @@ static int mqttclient_tls_verify_cb(int preverify, WOLFSSL_X509_STORE_CTX* store
 static int mqttclient_tls_cb( MqttClient* cli )
 {
   int rc = SSL_FAILURE;
-  (void)cli; /* Supress un-used argument */
+  //(void)cli; /* Supress un-used argument */
 
   wolfSSL_CTX_set_verify(cli->tls.ctx, SSL_VERIFY_PEER, mqttclient_tls_verify_cb);
 
@@ -105,7 +106,7 @@ static int mqttclient_tls_cb( MqttClient* cli )
     rc = SSL_SUCCESS;
   }
 
-  printf("MQTT TLS Setup (%d)\n", rc);
+  Serial.printf("MQTT TLS Setup (%d)\n", rc);
 
   return rc;
 }
@@ -252,7 +253,7 @@ void loop() {
 
     /* Send Connect and wait for Connect Ack */
     rc = MqttClient_Connect(&client, &connect);
-    printf("MQTT Connect: %s (%d)\n",
+    Serial.printf("MQTT Connect: %s (%d)\n",
            MqttClient_ReturnCodeToString(rc), rc);
     if (rc == MQTT_CODE_SUCCESS) {
       MqttSubscribe subscribe;
@@ -358,4 +359,6 @@ void loop() {
     Serial.print(" ");
     Serial.println(rc);
   }
+  Serial.println("Waiting 60 seconds...");
+  delay(60000);
 }
