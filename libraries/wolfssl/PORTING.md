@@ -2,6 +2,12 @@
 
 This port is based on release version 3.11.0
 
+# 2017-07-18
+
+In the Particle framework, when you try to combine wolfssl and wolfmqtt, we
+have certain conflicts that we need to avoid.  We will now bring in
+wolfmqtt into wolfssl piecemeal so we can avoid breakage.
+
 # Unpacking
 
 Run the script in IDE/ARDUINO to setup the code base (wolfssl-arduino.sh).
