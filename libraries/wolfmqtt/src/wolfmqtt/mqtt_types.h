@@ -27,6 +27,8 @@
 #ifndef WOLFMQTT_TYPES_H
 #define WOLFMQTT_TYPES_H
 
+#define ENABLE_MQTT_TLS
+
 #ifdef __cplusplus
     extern "C" {
 #endif
