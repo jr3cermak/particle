@@ -29,7 +29,7 @@
  */
 //const char host[] = "192.168.1.148"; // server to connect to
 const char host[] = DEFAULT_MQTT_HOST; // server to connect to
-int port = 443; // port on server to connect to
+int port = 8443; // port on server to connect to
 
 /* This is a variable for sending to the remote server
  *
@@ -38,6 +38,7 @@ int port = 443; // port on server to connect to
  */
 char msg[400]      = { 0 };
 int msgSz          = 0;
+int certsOK        = 1;
 
 /* This determines the number of time to attempt to make
  * a connection to the remote server
@@ -61,7 +62,12 @@ WOLFSSL* ssl = 0;
 WOLFSSL_METHOD* method = 0;
 
 void setup() {
+  int ret = 0;
   Serial.begin(9600);
+
+  // wait for sync with Particle time for up to 10 seconds
+  waitFor(Particle.syncTimeDone, 10000);
+  Serial.println("Synced with time server.");
 
   method = wolfTLSv1_2_client_method();
   if (method == NULL) {
@@ -74,15 +80,34 @@ void setup() {
     return;
   }
   // initialize wolfSSL using callback functions
-  wolfSSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, 0);
+  //wolfSSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, 0);
+
+  // Add certificates for AWS IoT here
+  ret = wolfSSL_CTX_load_verify_buffer(ctx, CAcert, strlen((const char*)CAcert), SSL_FILETYPE_PEM);
+  if (ret != SSL_SUCCESS) {
+    Serial.print("Return code: ");
+    Serial.println(ret);
+    Serial.println("Failed to load CAcert.");
+    certsOK = 0;
+  }
+  ret = wolfSSL_CTX_use_certificate_buffer(ctx, CLcert, strlen((const char*)CLcert), SSL_FILETYPE_PEM);
+  if (ret != SSL_SUCCESS) {
+    Serial.print("Return code: ");
+    Serial.println(ret);
+    Serial.println("Failed to load CLcert.");
+    certsOK = 0;
+  }
+  ret = wolfSSL_CTX_use_PrivateKey_buffer(ctx, PRcert, strlen((const char*)PRcert), SSL_FILETYPE_PEM);
+  if (ret != SSL_SUCCESS) {
+    Serial.print("Return code: ");
+    Serial.println(ret);
+    Serial.println("Failed to load PRcert.");
+    certsOK = 0;
+  }
+
   wolfSSL_SetIOSend(ctx, EthernetSend);
   wolfSSL_SetIORecv(ctx, EthernetReceive);
 
-  // Create test message
-  sprintf(msg, "GET /test HTTP/1.1\r\n");
-  msgSz = sprintf(msg, "%sHost: %s\r\nUser-Agent: %s/%s\r\n\r\n", 
-    msg, host, "wolfssl", "3.11.2");
-  
   return;
 }
 
@@ -107,6 +132,7 @@ int EthernetReceive(WOLFSSL* ssl, char* reply, int sz, void* ctx) {
 }
 
 void loop() {
+  int nret           = 0;
   int err            = 0;
   int input          = 0;
   int sent           = 0;
@@ -114,6 +140,13 @@ void loop() {
   char errBuf[80];
   char reply[80];
   WOLFSSL_CIPHER* cipher;
+
+  // If certs failed to load, skip connecting at all
+  if (certsOK == 0) {
+    reconnect = 0;
+    certsOK = -1;
+    Serial.println("Not connecting as certificate load failed.");
+  }
     
   if (reconnect) {
     reconnect--;
@@ -131,11 +164,33 @@ void loop() {
       
       Serial.print("SSL version is ");
       Serial.println(wolfSSL_get_version(ssl));
-      
-      if ((wolfSSL_write(ssl, msg, strlen(msg))) == msgSz) {
+
       cipher = wolfSSL_get_current_cipher(ssl);
       Serial.print("SSL cipher suite is ");
       Serial.println(wolfSSL_CIPHER_get_name(cipher));                
+
+      // We have to write the header
+      memset(msg, 0, 400);
+      sprintf(msg, "POST /topics/temperatureA?qos=1 HTTP/1.1\r\n");
+      msgSz = sprintf(msg, "%sHost: %s\r\nUser-Agent: %s/%s\r\n", 
+        msg, host, "wolfssl", "3.11.2");
+      msgSz = sprintf(msg, "%sAccept: */*\r\nContent-Length: 89\r\n", msg);
+      msgSz = sprintf(msg, "%sContent-Type: application/x-www-form-urlencoded\r\n", msg);
+      Serial.print("Header size: ");
+      Serial.println(msgSz);
+  
+      Serial.print("Writing header: ");
+      nret = wolfSSL_write(ssl, msg, strlen(msg));
+      Serial.println(nret);
+
+      // We have to write the data
+      memset(msg, 0, 400);
+      sprintf(msg, "%s", "{ \"serialNumber\": \"G030JF053216F1BS\", \"clickType\": \"SINGLE\", \"batteryVoltage\": \"2000mV\" }");
+      Serial.print("Writing data: ");
+      nret = wolfSSL_write(ssl, msg, strlen(msg));
+      Serial.println(nret);
+      
+      if (nret == msgSz) {
         delay(1000);
         Serial.print("client.available():");
         Serial.println(client.available());
