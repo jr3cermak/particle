@@ -68,6 +68,8 @@ void setup() {
   // wait for sync with Particle time for up to 10 seconds
   waitFor(Particle.syncTimeDone, 10000);
   Serial.println("Synced with time server.");
+  Serial.print("Time now: ");
+  Serial.println(Time.now());
 
   method = wolfTLSv1_2_client_method();
   if (method == NULL) {
@@ -86,7 +88,8 @@ void setup() {
   ret = wolfSSL_CTX_load_verify_buffer(ctx, CAcert, strlen((const char*)CAcert), SSL_FILETYPE_PEM);
   if (ret != SSL_SUCCESS) {
     Serial.print("Return code: ");
-    Serial.println(ret);
+    Serial.print(ret);
+    Serial.printlnf(" (%s)",wolfSSL_ERR_reason_error_string(ret));
     Serial.println("Failed to load CAcert.");
     certsOK = 0;
   }
@@ -165,33 +168,38 @@ void loop() {
       Serial.print("SSL version is ");
       Serial.println(wolfSSL_get_version(ssl));
 
-      cipher = wolfSSL_get_current_cipher(ssl);
-      Serial.print("SSL cipher suite is ");
-      Serial.println(wolfSSL_CIPHER_get_name(cipher));                
-
       // We have to write the header
-      memset(msg, 0, 400);
+      memset(msg, 0, sizeof(msg));
       sprintf(msg, "POST /topics/temperatureA?qos=1 HTTP/1.1\r\n");
       msgSz = sprintf(msg, "%sHost: %s\r\nUser-Agent: %s/%s\r\n", 
         msg, host, "wolfssl", "3.11.2");
+      //  msg, host, "curl", "7.51.0");
       msgSz = sprintf(msg, "%sAccept: */*\r\nContent-Length: 89\r\n", msg);
-      msgSz = sprintf(msg, "%sContent-Type: application/x-www-form-urlencoded\r\n", msg);
+      msgSz = sprintf(msg, "%sContent-Type: application/x-www-form-urlencoded\r\n\r\n", msg);
       Serial.print("Header size: ");
       Serial.println(msgSz);
-  
-      Serial.print("Writing header: ");
       nret = wolfSSL_write(ssl, msg, strlen(msg));
+      Serial.print("Bytes written: ");
       Serial.println(nret);
 
       // We have to write the data
-      memset(msg, 0, 400);
-      sprintf(msg, "%s", "{ \"serialNumber\": \"G030JF053216F1BS\", \"clickType\": \"SINGLE\", \"batteryVoltage\": \"2000mV\" }");
-      Serial.print("Writing data: ");
+      memset(msg, 0, sizeof(msg));
+      msgSz = sprintf(msg, "%s", "{ \"serialNumber\": \"G030JF053216F1BS\", \"clickType\": \"SINGLE\", \"batteryVoltage\": \"2000mV\" }");
+      Serial.print("Data payload size: ");
+      Serial.println(msgSz);
       nret = wolfSSL_write(ssl, msg, strlen(msg));
+      Serial.print("Bytes written: ");
       Serial.println(nret);
       
+      // If we got the expected response from the writer, see if we get
+      // a response from the server.
       if (nret == msgSz) {
-        delay(1000);
+        delay(2000);
+
+        cipher = wolfSSL_get_current_cipher(ssl);
+        Serial.print("SSL cipher suite: ");
+        Serial.println(wolfSSL_CIPHER_get_name(cipher));
+
         Serial.print("client.available():");
         Serial.println(client.available());
         Serial.print("Server response: ");
@@ -210,6 +218,7 @@ void loop() {
             Serial.println();
           }
         } 
+        Serial.println();
       } else {
         Serial.println("SSL_write failed");
       }

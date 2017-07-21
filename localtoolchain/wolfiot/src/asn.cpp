@@ -201,7 +201,7 @@ ASN Options:
 #endif
 
 /* wolf struct tm and time_t */
-#if defined(USE_WOLF_TM)
+#if defined(USE_WOLF_TM) && !defined(WOLFSSL_PARTICLE_ARM)
     struct tm {
         int  tm_sec;     /* seconds after the minute [0-60] */
         int  tm_min;     /* minutes after the hour [0-59] */
@@ -3981,6 +3981,8 @@ int ValidateDate(const byte* date, byte format, int dateType)
 #endif
 
     ltime = XTIME(0);
+    Serial.print("ltime: ");
+    Serial.println(ltime);
 
 #ifdef WOLFSSL_BEFORE_DATE_CLOCK_SKEW
     if (dateType == BEFORE) {
@@ -4013,6 +4015,8 @@ int ValidateDate(const byte* date, byte format, int dateType)
     }
 
     ltime -= (time_t)timeDiff ;
+    Serial.print("timeDiff: ");
+    Serial.println(timeDiff);
     localTime = XGMTIME(&ltime, tmpTime);
 
     if (localTime == NULL) {
