@@ -204,7 +204,7 @@ void loop() {
 
         Serial.print("client.available():");
         Serial.println(client.available());
-        Serial.print("Server response: ");
+        Serial.println("Server response:");
         while (client.available() || wolfSSL_pending(ssl)) {
           input = wolfSSL_read(ssl, reply, sizeof(reply) - 1);
           total_input += input;

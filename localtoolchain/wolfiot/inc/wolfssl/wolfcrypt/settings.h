@@ -204,12 +204,14 @@
     // Does not change the size of the firmware
     /*
     #define NO_SHA512
-    #define NO_MD4
     #define STATIC_CHUNKS_ONLY
     */
+    // Manual says it should not be used as it is broken
+    #define NO_MD4
     // Optional items that will increase the size of the firmware
     // if they are enabled.
     //#define DEBUG_WOLFSSL
+    #define NO_WOLFSSL_SERVER
     #define NO_ERROR_STRINGS
     #define NO_DES3
     #define NO_DSA

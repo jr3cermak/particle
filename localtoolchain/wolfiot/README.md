@@ -56,7 +56,13 @@ With debugging, the size is approximately 127228.
 This option turns on verbose debugging when a function is triggered in
 setup() or loop().  See: wolfSSL_Debugging_ON(); in logging.cpp.
 
-To obtain error strings, diable the NO_ERROR_STRINGS define.
+To obtain error strings, diable the NO_ERROR_STRINGS define. 
+NOTE: This also disables the ability to see the cipher suite in use.
+
+### NO_WOLFSSL_SERVER
+
+The server code adds about 6112 bytes to the firmware.  This may be
+disabled if you are only using the library for client operations.
 
 ### NO_ERROR_STRINGS
 
@@ -93,6 +99,9 @@ DES3 adds about 4128 bytes to the firmware.
 # History
 
 ## 2017-07-22 
+
+For client only operations, we can disable the server code (NO_WOLFSSL_SERVER).  This
+now produces a firmware size of 89324 for client only operations.
 
 See (Chapter 2)[https://www.wolfssl.com/wolfSSL/Docs-wolfssl-manual-2-building-wolfssl.html]
 of the wolfssl manual on all the compile options.
