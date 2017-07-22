@@ -189,17 +189,14 @@
 #endif
 
 #if defined(WOLFSSL_PARTICLE_ARM)
-    //#define DEBUG_WOLFSSL
     #define NO_MAIN_DRIVER
     #define SINGLE_THREADED
     #if !defined(USE_CERT_BUFFERS_2048) && !defined(USE_CERT_BUFFERS_4096)
         #define USE_CERT_BUFFERS_1024
     #endif
-    #define BENCH_EMBEDDED
     #define NO_FILESYSTEM
     #define NO_WRITEV
     #define WOLFSSL_USER_IO
-    #define BENCH_EMBEDDED
     #define NO_OLD_RNGNAME
     #define TIME_OVERRIDES
     #define NO_OLD_TLS
@@ -208,9 +205,12 @@
     /*
     #define NO_SHA512
     #define NO_MD4
+    #define STATIC_CHUNKS_ONLY
     */
     // Optional items that will increase the size of the firmware
     // if they are enabled.
+    //#define DEBUG_WOLFSSL
+    #define NO_ERROR_STRINGS
     #define NO_DES3
     #define NO_DSA
     #define NO_HC128

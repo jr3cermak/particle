@@ -56,6 +56,12 @@ With debugging, the size is approximately 127228.
 This option turns on verbose debugging when a function is triggered in
 setup() or loop().  See: wolfSSL_Debugging_ON(); in logging.cpp.
 
+To obtain error strings, diable the NO_ERROR_STRINGS define.
+
+### NO_ERROR_STRINGS
+
+NO_ERROR_STRINGS adds about 11152 bytes to the firmware.
+
 ### NO_SHA512
 
 SHA512 does not change the size of the firmware.
@@ -87,6 +93,11 @@ DES3 adds about 4128 bytes to the firmware.
 # History
 
 ## 2017-07-22 
+
+See (Chapter 2)[https://www.wolfssl.com/wolfSSL/Docs-wolfssl-manual-2-building-wolfssl.html]
+of the wolfssl manual on all the compile options.
+
+Disabled error strings, saving about 11k.  (11152)
 
 Proceeding with general cleanup of code moving stuff into a specific platform define WOLFSSL_PARTICLE_ARM.
 
