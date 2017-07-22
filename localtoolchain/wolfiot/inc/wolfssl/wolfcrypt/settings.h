@@ -108,9 +108,9 @@ src/aes.cpp:2189: undefined reference to `CRYP_KeyStructInit'
 /* #define WOLFSSL_EROAD */
 
 /* Uncomment next line if building for IAR EWARM */
+#define WOLFSSL_PARTICLE_ARM
 #define WOLFSSL_IAR_ARM
 #define TIME_OVERRIDES
-#define WOLFSSL_PARTICLE_ARM
 // Disable some encryption methods
 #define NO_SHA512
 #define NO_DSA
@@ -121,7 +121,7 @@ src/aes.cpp:2189: undefined reference to `CRYP_KeyStructInit'
 #define NO_DES3
 #define NO_OLD_TLS
 #define NO_SESSION_CACHE
-#define USE_CERT_BUFFERS_1024
+//#define USE_CERT_BUFFERS_1024
 
 /* Uncomment next line if building for Rowley CrossWorks ARM */
 /* #define WOLFSSL_ROWLEY_ARM */

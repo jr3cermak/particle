@@ -88,7 +88,7 @@ WOLFSSL_API int wolfSSL_SetLoggingCb(wolfSSL_Logging_cb log_function);
     #define WOLFSSL_LEAVE(m, r)
     #define WOLFSSL_STUB(m)
 
-    #define WOLFSSL_MSG(m) Serial.println(m)
+    #define WOLFSSL_MSG(m)
     #define WOLFSSL_BUFFER(b, l)
 
 #endif /* DEBUG_WOLFSSL  */
