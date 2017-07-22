@@ -22183,7 +22183,6 @@ struct tm* XGMTIME(const time_t* tim_p, struct tm* res) {
   unsigned erayear, yearday, month, day;
   unsigned long eraday;
 
-  Serial.printlnf("tim_p: %ld", lcltime);
   days = ((long)lcltime) / SECSPERDAY + EPOCH_ADJUSTMENT_DAYS;
   rem = ((long)lcltime) % SECSPERDAY;
   if (rem < 0)

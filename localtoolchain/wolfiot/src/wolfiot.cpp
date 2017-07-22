@@ -68,8 +68,10 @@ void setup() {
   // wait for sync with Particle time for up to 10 seconds
   waitFor(Particle.syncTimeDone, 10000);
   Serial.println("Synced with time server.");
-  Serial.print("Time now: ");
-  Serial.println(Time.now());
+
+#if defined(DEBUG_WOLFSSL)
+  wolfSSL_Debugging_ON();
+#endif
 
   method = wolfTLSv1_2_client_method();
   if (method == NULL) {

@@ -109,6 +109,7 @@ src/aes.cpp:2189: undefined reference to `CRYP_KeyStructInit'
 
 /* Uncomment next line if building for IAR EWARM */
 #define WOLFSSL_PARTICLE_ARM
+//#define DEBUG_WOLFSSL
 #define WOLFSSL_IAR_ARM
 #define TIME_OVERRIDES
 // Disable some encryption methods
