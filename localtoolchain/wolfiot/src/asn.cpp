@@ -120,11 +120,13 @@ ASN Options:
         time_t XTIME(time_t * timer) {}
         struct tm* XGMTIME(const time_t* timer, struct tm* tmp) {}
     */
-    #ifndef HAVE_TIME_T_TYPE
-        #define USE_WOLF_TIME_T
-    #endif
-    #ifndef HAVE_TM_TYPE
-        #define USE_WOLF_TM
+    #ifndef WOLFSSL_PARTICLE_ARM
+        #ifndef HAVE_TIME_T_TYPE
+            #define USE_WOLF_TIME_T
+        #endif
+        #ifndef HAVE_TM_TYPE
+            #define USE_WOLF_TM
+        #endif
     #endif
     #define NEED_TMP_TIME
 
@@ -201,7 +203,7 @@ ASN Options:
 #endif
 
 /* wolf struct tm and time_t */
-#if defined(USE_WOLF_TM) && !defined(WOLFSSL_PARTICLE_ARM)
+#if defined(USE_WOLF_TM)
     struct tm {
         int  tm_sec;     /* seconds after the minute [0-60] */
         int  tm_min;     /* minutes after the hour [0-59] */

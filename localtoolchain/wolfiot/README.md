@@ -44,9 +44,22 @@ See: wolfiot/inc/wolfssl/wolfcrypt/settings.h
 
 Without debugging, the current size is approximately 106764.
 
+### WOLFSSL_PARTICLE_ARM
+
+This is now the generic define that allows wolfssl to build.  We were using
+a similar define WOLFSSL_IAR_ARM that did more of the right things.
+
 ### DEBUG_WOLFSSL
 
 This option turns on verbose debugging when a function is triggered in
 setup() or loop().  See: wolfSSL_Debugging_ON(); in logging.cpp.
 
 With debugging, the size is approximately 127228.
+
+# History
+
+## 2017-07-22 
+
+Proceeding with general cleanup of code moving stuff into a specific platform define WOLFSSL_PARTICLE_ARM.
+
+Size: 106588
