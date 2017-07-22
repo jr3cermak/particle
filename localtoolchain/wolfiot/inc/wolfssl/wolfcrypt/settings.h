@@ -89,17 +89,7 @@
 /* #define FREESCALE_KSDK_FREERTOS */
 
 /* Uncomment next line if using STM32F2 */
-/* Can't get this to compile cleanly, the headers are accepted, but
-   the symbols are missing
-
-../../../build/target/user/platform-6-mlibuser.a(aes.o): In function `wc_AesCbcEncrypt':
-src/aes.cpp:2189: undefined reference to `CRYP_KeyStructInit'
-....
-*/
-//#define WOLFSSL_STM32F2
-//#define SINGLE_THREADED
-//#define NO_WRITEV
-//#define WOLFSSL_USER_IO
+/* #define WOLFSSL_STM32F2 */
 
 /* Uncomment next line if using QL SEP settings */
 /* #define WOLFSSL_QL */
@@ -111,18 +101,7 @@ src/aes.cpp:2189: undefined reference to `CRYP_KeyStructInit'
 #define WOLFSSL_PARTICLE_ARM
 
 /* Uncomment next line if building for IAR EWARM */
-//#define WOLFSSL_IAR_ARM
-//#define TIME_OVERRIDES
-// Disable some encryption methods
-//#define NO_SHA512
-//#define NO_DSA
-//#define NO_HC128
-//#define NO_RC4
-//#define NO_MD4
-//#define NO_MD5
-//#define NO_DES3
-//#define NO_OLD_TLS
-//#define NO_SESSION_CACHE
+/* #define WOLFSSL_IAR_ARM */
 
 /* Uncomment next line if building for Rowley CrossWorks ARM */
 /* #define WOLFSSL_ROWLEY_ARM */
@@ -223,16 +202,20 @@ src/aes.cpp:2189: undefined reference to `CRYP_KeyStructInit'
     #define BENCH_EMBEDDED
     #define NO_OLD_RNGNAME
     #define TIME_OVERRIDES
-    // Alternatives
-    #define NO_SHA512
-    #define NO_DSA
-    #define NO_HC128
-    #define NO_RC4
-    #define NO_MD4
-    #define NO_MD5
-    #define NO_DES3
     #define NO_OLD_TLS
     #define NO_SESSION_CACHE
+    // Does not change the size of the firmware
+    /*
+    #define NO_SHA512
+    #define NO_MD4
+    */
+    // Optional items that will increase the size of the firmware
+    // if they are enabled.
+    #define NO_DES3
+    #define NO_DSA
+    #define NO_HC128
+    #define NO_MD5
+    #define NO_RC4
 #endif
 
 #if defined(WOLFSSL_IAR_ARM) || defined(WOLFSSL_ROWLEY_ARM)

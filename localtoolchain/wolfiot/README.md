@@ -51,10 +51,38 @@ a similar define WOLFSSL_IAR_ARM that did more of the right things.
 
 ### DEBUG_WOLFSSL
 
+With debugging, the size is approximately 127228.
+
 This option turns on verbose debugging when a function is triggered in
 setup() or loop().  See: wolfSSL_Debugging_ON(); in logging.cpp.
 
-With debugging, the size is approximately 127228.
+### NO_SHA512
+
+SHA512 does not change the size of the firmware.
+
+### NO_DSA
+
+DSA adds about 144 bytes to the firmware.
+
+### NO_HC128
+
+HC128 adds about 48 bytes to the firmware.
+
+### NO_RC4
+
+RC4 adds about 1232 bytes to the firmware.
+
+### NO_MD4
+
+MD4 does not change the size of the firmware.
+
+### NO_MD5
+
+MD5 adds about 2320 bytes to the firmware.
+
+### NO_DES3
+
+DES3 adds about 4128 bytes to the firmware.
 
 # History
 
