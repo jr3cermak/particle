@@ -19,9 +19,12 @@ This is the general repository structure:
 ```
   libraries                   Particle platform libraries (v2)
   projects                    Particle platform projects (v2)
+  localtoolchain              Libraries and projects in the local toolchain format
 ```
 
 Project and Library format guidelines found in the Particle [GUIDE](https://docs.particle.io/guide/tools-and-features/libraries/).
+
+[Local toolchain](https://docs.particle.io/faq/particle-tools/local-build/photon/) documentation.
 
 # Policy
 
