@@ -216,6 +216,7 @@
     #define NO_DES3
     #define NO_DSA
     #define NO_HC128
+    #define NO_RABBIT
     #define NO_MD5
     #define NO_RC4
 #endif

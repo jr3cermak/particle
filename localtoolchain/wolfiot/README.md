@@ -66,7 +66,10 @@ disabled if you are only using the library for client operations.
 
 ### NO_ERROR_STRINGS
 
-NO_ERROR_STRINGS adds about 11152 bytes to the firmware.
+NO_ERROR_STRINGS reduces firmware size by about 11152 bytes.  This removes
+essentially all the error strings (and documentation strings) from the
+firmware.  You will not know the cipher being used.  You can get the
+numeric code, but you will need to use the source to find out.
 
 ### NO_SHA512
 
@@ -76,9 +79,13 @@ SHA512 does not change the size of the firmware.
 
 DSA adds about 144 bytes to the firmware.
 
-### NO_HC128
+### NO_HC128; NO_RABBIT
 
 HC128 adds about 48 bytes to the firmware.
+
+RABBIT adds about 100 bytes to the firmware.
+
+These add stream cipher extensions to the firmware.
 
 ### NO_RC4
 
