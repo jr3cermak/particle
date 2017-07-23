@@ -110,7 +110,7 @@ DES3 adds about 4128 bytes to the firmware.
 For client only operations, we can disable the server code (NO_WOLFSSL_SERVER).  This
 now produces a firmware size of 89324 for client only operations.
 
-See (Chapter 2)[https://www.wolfssl.com/wolfSSL/Docs-wolfssl-manual-2-building-wolfssl.html]
+See [Chapter 2](https://www.wolfssl.com/wolfSSL/Docs-wolfssl-manual-2-building-wolfssl.html)
 of the wolfssl manual on all the compile options.
 
 Disabled error strings, saving about 11k.  (11152)
