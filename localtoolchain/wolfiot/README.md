@@ -46,8 +46,6 @@ Without debugging, the current size is approximately 90k.
 
 ### NO_INLINE
 
-Defining NO_INLINE causes havoc for the local toolchain.
-However, this might help the Particle Cli toolchain.  
 NO_INLINE adds about 2k to the firmware size.
 
 ### WOLFSSL_PARTICLE_ARM
@@ -112,6 +110,14 @@ DES3 adds about 4128 bytes to the firmware.
 # History
 
 ## 2017-07-28
+
+Introduced a bug anticipating that I needed to copy wolfcrypt/src/misc.c to misc.cpp so
+it is part of the library.  It is so intertwined with #includes, that created a bit
+of chaos.  It is now removed and the Particle CLI now compiles.
+
+It will not compile in the Particle DEV.  No matter where I place the include files,
+I get the error: wolfssl/wolfcrypt/settings.h: No such file or directory.   It is
+madness!
 
 Getting close to a Particle CLI resolution which isn't pretty, but it will work.
 
