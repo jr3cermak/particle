@@ -42,7 +42,13 @@ MIIE...\n\
 
 See: wolfiot/inc/wolfssl/wolfcrypt/settings.h
 
-Without debugging, the current size is approximately 106764.
+Without debugging, the current size is approximately 90k.
+
+### NO_INLINE
+
+Defining NO_INLINE causes havoc for the local toolchain.
+However, this might help the Particle Cli toolchain.  
+NO_INLINE adds about 2k to the firmware size.
 
 ### WOLFSSL_PARTICLE_ARM
 
@@ -104,6 +110,12 @@ MD5 adds about 2320 bytes to the firmware.
 DES3 adds about 4128 bytes to the firmware.
 
 # History
+
+## 2017-07-28
+
+Getting close to a Particle CLI resolution which isn't pretty, but it will work.
+
+Do not use NO_INLINE for local toolchain, you will be sorry.
 
 ## 2017-07-22 
 

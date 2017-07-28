@@ -219,6 +219,11 @@
     #define NO_RABBIT
     #define NO_MD5
     #define NO_RC4
+    /* Defining NO_INLINE causes havoc for the local toolchain.
+       However, this might help the Particle Cli toolchain.  
+       NO_INLINE adds about 2k to the firmware size.
+    */
+    //#define NO_INLINE
 #endif
 
 #if defined(WOLFSSL_IAR_ARM) || defined(WOLFSSL_ROWLEY_ARM)
