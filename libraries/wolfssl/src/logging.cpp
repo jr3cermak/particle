@@ -133,6 +133,8 @@ static void wolfssl_log(const int logLevel, const char *const logMessage)
         if (loggingEnabled) {
 #ifdef THREADX
             dc_log_printf("%s\n", logMessage);
+#elif defined(WOLFSSL_PARTICLE_ARM)
+            Serial.println(logMessage);
 #elif defined(MICRIUM)
         #if (NET_SECURE_MGR_CFG_EN == DEF_ENABLED)
             NetSecure_TraceOut((CPU_CHAR *)logMessage);

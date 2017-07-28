@@ -121,6 +121,7 @@ int wc_RNG_GenerateByte(WC_RNG* rng, byte* b)
 #elif defined(WOLFSSL_GENSEED_FORTEST)
 #elif defined(WOLFSSL_MDK_ARM)
 #elif defined(WOLFSSL_IAR_ARM)
+#elif defined(WOLFSSL_PARTICLE_ARM)
 #elif defined(WOLFSSL_ROWLEY_ARM)
 #elif defined(WOLFSSL_EMBOS)
 #else
@@ -1663,7 +1664,7 @@ int wc_GenerateSeed(OS_Seed* os, byte* output, word32 sz)
       defined(WOLFSSL_uITRON4)  || defined(WOLFSSL_uTKERNEL2) || \
       defined(WOLFSSL_LPC43xx)  || defined(WOLFSSL_STM32F2xx) || \
       defined(MBED)             || defined(WOLFSSL_EMBOS) || \
-      defined(WOLFSSL_GENSEED_FORTEST)
+      defined(WOLFSSL_GENSEED_FORTEST) || defined(WOLFSSL_PARTICLE_ARM)
 
     /* these platforms do not have a default random seed and
        you'll need to implement your own wc_GenerateSeed or define via

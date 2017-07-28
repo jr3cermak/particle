@@ -27,6 +27,7 @@
 #define WOLFSSL_LOGGING_H
 
 #include <wolfssl/wolfcrypt/types.h>
+#include "application.h"
 
 #ifdef __cplusplus
     extern "C" {

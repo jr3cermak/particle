@@ -120,11 +120,13 @@ ASN Options:
         time_t XTIME(time_t * timer) {}
         struct tm* XGMTIME(const time_t* timer, struct tm* tmp) {}
     */
-    #ifndef HAVE_TIME_T_TYPE
-        #define USE_WOLF_TIME_T
-    #endif
-    #ifndef HAVE_TM_TYPE
-        #define USE_WOLF_TM
+    #ifndef WOLFSSL_PARTICLE_ARM
+        #ifndef HAVE_TIME_T_TYPE
+            #define USE_WOLF_TIME_T
+        #endif
+        #ifndef HAVE_TM_TYPE
+            #define USE_WOLF_TM
+        #endif
     #endif
     #define NEED_TMP_TIME
 

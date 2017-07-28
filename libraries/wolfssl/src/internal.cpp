@@ -5219,7 +5219,7 @@ retry:
 /* Switch dynamic output buffer back to static, buffer is assumed clear */
 void ShrinkOutputBuffer(WOLFSSL* ssl)
 {
-    WOLFSSL_MSG("Shrinking output buffer\n");
+    WOLFSSL_MSG("Shrinking output buffer");
     XFREE(ssl->buffers.outputBuffer.buffer - ssl->buffers.outputBuffer.offset,
           ssl->heap, DYNAMIC_TYPE_OUT_BUFFER);
     ssl->buffers.outputBuffer.buffer = ssl->buffers.outputBuffer.staticBuffer;
@@ -5238,7 +5238,7 @@ void ShrinkInputBuffer(WOLFSSL* ssl, int forcedFree)
     if (!forcedFree && usedLength > STATIC_BUFFER_LEN)
         return;
 
-    WOLFSSL_MSG("Shrinking input buffer\n");
+    WOLFSSL_MSG("Shrinking input buffer");
 
     if (!forcedFree && usedLength > 0)
         XMEMCPY(ssl->buffers.inputBuffer.staticBuffer,
@@ -5349,7 +5349,7 @@ static INLINE int GrowOutputBuffer(WOLFSSL* ssl, int size)
 
     tmp = (byte*)XMALLOC(size + ssl->buffers.outputBuffer.length + align,
                              ssl->heap, DYNAMIC_TYPE_OUT_BUFFER);
-    WOLFSSL_MSG("growing output buffer\n");
+    WOLFSSL_MSG("Growing output buffer");
 
     if (tmp == NULL)
         return MEMORY_E;
@@ -5413,7 +5413,7 @@ int GrowInputBuffer(WOLFSSL* ssl, int size, int usedLength)
 
     tmp = (byte*)XMALLOC(size + usedLength + align,
                              ssl->heap, DYNAMIC_TYPE_IN_BUFFER);
-    WOLFSSL_MSG("growing input buffer\n");
+    WOLFSSL_MSG("Growing input buffer");
 
     if (tmp == NULL)
         return MEMORY_E;
@@ -22130,11 +22130,10 @@ int wolfSSL_AsyncPush(WOLFSSL* ssl, WC_ASYNC_DEV* asyncDev, word32 flags)
 
 #ifdef TIME_OVERRIDES
 
+// This should provide Unix epoch time in seconds UTC
 time_t XTIME(time_t * timer)
 {
-    uint32_t hal_t = HAL_Timer_Milliseconds();  // get uptime in nanoseconds
-
-    return hal_t / 1000; // convert to seconds
+    return Time.now();
 }
 
 /* local.h */
@@ -22158,7 +22157,6 @@ time_t XTIME(time_t * timer)
 /* local.h */
 
 //struct tm* XGMTIME(const time_t* timer) {}
-//REF: 
 #define EPOCH_ADJUSTMENT_DAYS 719468L
 /* year to which the adjustment was made */
 #define ADJUSTED_EPOCH_YEAR 0
