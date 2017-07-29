@@ -30,7 +30,7 @@ See [wolfssl](https://www.wolfssl.com) for more concise documentation
 about the library.
 
 If you are starting from wolfssl source, try using the mklibwolfssl script
-in the [bin](bin) directory to setup the initial source and then apply
+found on the git repository to setup the initial source and then apply
 changes to the library.
 
 ## Contributing

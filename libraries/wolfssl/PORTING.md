@@ -2,6 +2,20 @@
 
 This port is based on release version 3.11.0
 
+# 2017-07-28
+
+## Release 0.0.1
+
+More documentation coming...
+
+Finally figured out how libraries work in the Particle ecosystem.  Once you upload it,
+the cloud magically knits your project together with the library as stated in 
+library.properties.
+
+To make your own customizations to the library, you need to use Particle CLI to
+download a copy, make your modifications and upload a private copy that you will
+compile against.
+
 # 2017-07-18
 
 In the Particle framework, when you try to combine wolfssl and wolfmqtt, we
