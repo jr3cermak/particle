@@ -88,6 +88,7 @@ apt-get install isc-dhcp-server
 
 ## Edit: /etc/dhcp/dhcpd.conf
 
+```
 ddns-update-style none;
 #option domain-name "example.org";
 #option domain-name-servers ns1.example.org, ns2.example.org;
@@ -102,6 +103,7 @@ subnet 10.1.0.0 netmask 255.255.255.0 {
   max-lease-time 7200;
   option domain-name-servers 10.0.1.1;
 }
+```
 
 ## Restart dhcpd
 
@@ -113,7 +115,7 @@ When in doubt reboot!
 
 # Install and configure (hostapd)
 
-WARNING: Choose your own `ssid` and `
+WARNING: Choose your own `ssid` and `password` other than the ones below.  Do not use quotes!
 
 ## Install hostapd
 
