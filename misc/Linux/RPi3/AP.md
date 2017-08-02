@@ -6,10 +6,10 @@ the [the Local Cloud](https://github.com/spark/spark-server).
 
 # References
 
-https://cdn-learn.adafruit.com/downloads/pdf/setting-up-a-raspberry-pi-as-a-wifi-access-point.pdf
-https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
-https://frillip.com/using-your-raspberry-pi-3-as-a-wifi-access-point-with-hostapd/
-http://blog.ithasu.org/2016/10/using-a-raspberry-pi-3-as-a-wifi-access-point-and-bridge/
+*  https://cdn-learn.adafruit.com/downloads/pdf/setting-up-a-raspberry-pi-as-a-wifi-access-point.pdf
+*  https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
+*  https://frillip.com/using-your-raspberry-pi-3-as-a-wifi-access-point-with-hostapd/
+*  http://blog.ithasu.org/2016/10/using-a-raspberry-pi-3-as-a-wifi-access-point-and-bridge/
 
 # Platform
 
@@ -45,6 +45,7 @@ DHCP uses a subset of this range.
 
 ## Edit: /etc/network/interfaces
 
+```
 auto lo eth0
 
 allow-hotplug wlan0  
@@ -54,6 +55,7 @@ iface wlan0 inet static
 #wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
 
 iface eth0 inet dhcp
+```
 
 # Restart the wlan0 port
 
