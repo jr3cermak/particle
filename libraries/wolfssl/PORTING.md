@@ -2,6 +2,24 @@
 
 This port is based on release version 3.11.0
 
+# 2017-08-09
+
+Solved the puzzle with AWS API Gateway.  For encryption and decryption purposes,
+HAVE_ECC must be defined.  HAVE_SNI (server name indication) must also be
+turned on.  HAVE_SNI requires HAVE_TLS_EXTENSIONS.   This will enable HTTP/1.1 to
+work with AWS API.
+
+As an option, you may also turn on ALPN which is the security protocol of the
+future.  After some testing, it was found that HTTP/2 (h2) was not working.
+Falling back to http/1.1 does work with ALPN.   To enable ALPN, use:
+HAVE_ALPN.
+
+# 2017-08-07
+
+Source of the fault is `//#define USE_FAST_MATH` there is something
+wrong in the math used in Toms Fast Math library.  There are a lot
+of calls which might be consuming the stack.
+
 # 2017-07-28
 
 ## Release 0.0.1

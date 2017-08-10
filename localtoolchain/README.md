@@ -1,12 +1,15 @@
-# local toolchain
+# Local Toolchain
 
-# building
+# Building
 
-`make all PLATFORM=photon APPDIR=../../${PROJECT}`
+```
+cd ${SRC}/firmware/modules
+make all PLATFORM=photon APPDIR=../../${PROJECT}
+````
 
-# serial flashing
+# Flashing
 
-## MacOS
+## MacOS (Serial)
 
 ```
 stty -f /dev/cu.usbmodem* speed 28800 > /dev/null

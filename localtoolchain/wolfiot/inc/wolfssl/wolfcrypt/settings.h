@@ -201,6 +201,13 @@
     #define TIME_OVERRIDES
     #define NO_OLD_TLS
     #define NO_SESSION_CACHE
+    // Required for AWS API Gateway services: TLS_EXTENSIONS + SNI + ECC
+    // Works using HTTP/1.1 or ALPN;http/1.1
+    // Last attempt ALPN;http/2(h2) did not work; it works in curl just fine
+    #define HAVE_TLS_EXTENSIONS
+    #define HAVE_SNI
+    #define HAVE_ECC
+    //#define HAVE_ALPN
     // Does not change the size of the firmware
     /*
     #define NO_SHA512
@@ -219,11 +226,6 @@
     #define NO_RABBIT
     #define NO_MD5
     #define NO_RC4
-    /* Defining NO_INLINE causes havoc for the local toolchain.
-       However, this might help the Particle Cli toolchain.  
-       NO_INLINE adds about 2k to the firmware size.
-    */
-    //#define NO_INLINE
 #endif
 
 #if defined(WOLFSSL_IAR_ARM) || defined(WOLFSSL_ROWLEY_ARM)

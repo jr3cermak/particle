@@ -42,16 +42,30 @@ MIIE...\n\
 
 See: wolfiot/inc/wolfssl/wolfcrypt/settings.h
 
-Without debugging, the current size is approximately 90k.
-
-### NO_INLINE
-
-NO_INLINE adds about 2k to the firmware size.
+Without debugging, the current size is approximately 105k.
 
 ### WOLFSSL_PARTICLE_ARM
 
 This is now the generic define that allows wolfssl to build.  We were using
 a similar define WOLFSSL_IAR_ARM that did more of the right things.
+
+### HAVE_TLS_EXTENSIONS
+
+Required for SNI.   This will add about 496 bytes to the firmware size.
+
+### HAVE_SNI
+
+Required to communicate with AWS API Gateway.  This will add about
+352 bytes to the firmware size.
+
+### HAVE_ECC
+
+Required to communicate with the AWS API Gateway.  This will add
+about 14k to the firmware size.
+
+### NO_INLINE
+
+NO_INLINE adds about 2k to the firmware size.
 
 ### DEBUG_WOLFSSL
 

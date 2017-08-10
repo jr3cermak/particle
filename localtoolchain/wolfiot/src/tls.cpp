@@ -1187,7 +1187,11 @@ static int TLSX_ALPN_ParseAndSet(WOLFSSL *ssl, byte *input, word16 length,
         if (!match) {
             alpn = TLSX_ALPN_Find(list, (char*)input + offset, size);
             if (alpn != NULL) {
+                #if defined(HAVE_ALPN) && defined(WOLFSSL_PARTICLE_ARM)
+                Serial.printlnf("ALPN protocol match:(%s)", (char*)input + offset);
+                #else
                 WOLFSSL_MSG("ALPN protocol match");
+                #endif
                 match = 1;
 
                 /* skip reading other values if not required */
