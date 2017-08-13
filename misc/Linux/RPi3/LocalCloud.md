@@ -790,8 +790,26 @@ Your server IP address is: 10.1.0.1
 server started { host: 'localhost', port: 5683 }
 ```
 
-NOTE: I have two server addresses!  The 10.0.1.29 is my real local LAN.
-The actual local Cloud we setup begins at 10.1.0.1.
+NOTE: I have two server addresses!  The 10.0.1.29 is my real local
+LAN.  The actual local cloud we just setup begins at 10.1.0.1.  I
+beleve either will work, but you will want to use the wireless lan
+since that will be isolated and not necessarily connected to any
+other network.
+
+# Server key
+
+As seen above, a *new* server key has been created.  This file is
+located at:
+
+`/spark/spark-server/default_key.pub.pem`
+
+You will need this file later!
+
+To switch back to the Particle cloud, you will need to download
+this file: cloud_public.der
+
+[https://s3.amazonaws.com/spark-website/cloud_public.der]
+(https://s3.amazonaws.com/spark-website/cloud_public.der)
 
 # Create a local cloud profile in a working Particle CLI toolchain
 
@@ -819,12 +837,12 @@ particle config particle
 particle config localCloud
 ```
 
-# Start setting up the "localCloud" server
+# Start setting up the local cloud server
 
-NOTE: These commands are run on the server running the "localCloud"
-software.  One terminal is in use now running `node main.js`, log in
-again and get to the command line to run more commands to set
-things up.
+NOTE: The following commands are run on the server running the local
+cloud software.  One terminal is in use running `node main.js`.  Use
+a fresh terminal to log in again and get to the command line to run
+more commands to set things up.
 
 
 ## Log in again and switch to the `pi` user
@@ -863,9 +881,52 @@ Login
 
 # Configure a Photon
 
+## Claim
+
+If this is a brand new Photon, claim it first using
+the Particle Cloud.
+
+`particle device add [DEVICE_ID]`
+
+Result:
+
+```
+$ particle device add [DEVICE_ID]
+Claiming device [DEVICE_ID]
+Successfully claimed device [DEVICE_ID]
+```
+
+## Rename
+
+Give your Photon a name.
+
+```
+$ particle core rename [DEVICE_ID] testCloud
+Renaming device [DEVICE_ID]
+Successfully renamed device [DEVICE_ID] to: testCloud
+```
+
+## Firmware
+
+Put the Photon into serial listening mode. [flashing blue]
+
+`particle serial identify`
+
+Be sure the Photon has the latest firmware on it.  If not,
+update it.
+
+```
+$ particle identify
+
+Your device id is 3xxxxYOUR_DEVICE_IDxxxxx
+Your system firmware version is 0.6.2 
+```
+
+# Update the Photon server key
+
 Plug in a Photon and place into DFU mode [flashing yellow].
 
-# Change server keys to local cloud key + IP address
+## Update server key to local cloud key + IP address
 
 ```
 $ particle keys server default_key.pub.pem 10.1.0.1
@@ -904,25 +965,150 @@ Put the Photon into serial listening mode. [flashing blue]
 
 `particle serial identify`
 
+```
+Your device id is 3xxxxxxxxxDEVICE_IDxxxxx
+Your system firmware version is 0.6.2 
+```
+
+The whole string shown is the DEVICE_ID.
+
 # Place the Particle device public key in the core_keys directory
 
 Put the Photon into DFU mode.
 
 ```
 cd core_keys
-particle keys save INPUT_DEVICE_ID_HERE
+particle keys save [DEVICE_ID]
 ```
 
 Reset the Photon by pressing the reset (RST) button.
-
-# Claim the Photon
-
-NOTE: You should claim the Photon in the normal Particle Cloud before
-attaching to the localCloud.
 
 ```
 particle setup
 ```
 
-# Check for a connection
+# Check that things are working
 
+Once the server is running, flash a small program to your Photon.
+The `SerialLogHandler` provides some very basic cloud connection
+diagnostics upon bootup.
+
+```
+SerialLogHandler logHandler;
+
+#define PIN D7
+int state = 0;
+
+void setup() {
+  pinMode(PIN, OUTPUT);
+}
+void loop() {
+  digitalWrite(PIN, (state) ? HIGH : LOW);
+  state = !state;
+  delay(500);
+}
+```
+
+Using `particle serial monitor --follow`, you should see
+the output below and the on board blue led should be flashing
+every 1/2 second.
+
+```
+0000001922 [system] INFO: ARM_WLAN_WD 2
+0000001922 [hal.wlan] INFO: Bringing WiFi interface up with DHCP
+0000002974 [system] INFO: CLR_WLAN_WD 1, DHCP success
+0000002975 [system] INFO: Cloud: connecting
+0000002976 [system] INFO: Read Server Address = type:0,domain:,ip: 10.1.0.1, port: 65535
+0000005732 [system] INFO: connected to cloud 10.1.0.1:5683
+0000005732 [system] INFO: Cloud socket connected
+0000005732 [system] INFO: Starting handshake: presense_announce=1
+0000005733 [comm.sparkprotocol.handshake] INFO: Started: Receive nonce
+0000005740 [comm.sparkprotocol.handshake] INFO: Encrypting handshake nonce
+0000005786 [comm.sparkprotocol.handshake] INFO: Sending encrypted nonce
+0000005787 [comm.sparkprotocol.handshake] INFO: Receive key
+0000005878 [comm.sparkprotocol.handshake] INFO: Setting key
+0000006066 [comm.sparkprotocol.handshake] INFO: Sending HELLO message
+0000006067 [comm.sparkprotocol.handshake] INFO: Receiving HELLO response
+0000006078 [comm.sparkprotocol.handshake] INFO: Completed
+0000006078 [system] INFO: Send spark/device/claim/code event
+0000006079 [system] INFO: Send spark/hardware/max_binary event
+0000006079 [system] INFO: spark/hardware/ota_chunk_size event
+0000006079 [system] INFO: Send spark/device/last_reset event
+0000006080 [system] INFO: Send subscriptions
+0000006080 [comm.sparkprotocol] INFO: Sending TIME request
+0000006082 [system] INFO: Cloud connected
+0000009583 [comm.sparkprotocol] INFO: Received TIME response: 1502647946
+```
+
+NOTE: This includes a time sync from the local cloud.  This should now
+have the time from the RPi3 server.  Accuracy is unknown.
+
+On the server side, you should see this in the terminal:
+
+```
+Connection from: ::ffff:10.1.0.4, connId: 2
+on ready { coreID: '[DEVICE_ID]',
+  ip: '::ffff:10.1.0.4',
+    product_id: 6,
+      firmware_version: 65535,
+        cache_key: '_1' }
+        Core online!
+```
+
+# Reconnect Photon to Particle Cloud
+
+## Update server key
+
+NOTE: We do not supply an IP address with the key.
+
+```
+$ particle keys server cloud_public.der
+Found DFU device 2b04:d006
+spawning dfu-util -d 2b04:d006 -a 1 -i 0 -s 2082 -D cloud_public-padded.der
+No valid DFU suffix signature
+Warning: File has no DFU suffix
+dfu-util 0.7
+
+Copyright 2005-2008 Weston Schmidt, Harald Welte and OpenMoko Inc.
+Copyright 2010-2012 Tormod Volden and Stefan Schmidt
+This program is Free Software and has ABSOLUTELY NO WARRANTY
+Please report bugs to dfu-util@lists.gnumonks.org
+
+Filter on vendor = 0x2b04 product = 0xd006
+Opening DFU capable USB device... ID 2b04:d006
+Run-time device DFU version 011a
+Found DFU: [2b04:d006] devnum=0, cfg=1, intf=0, alt=1, name="@DCT Flash   /0x00000000/01*016Kg"
+Claiming USB DFU Interface...
+Setting Alternate Setting #1 ...
+Determining device status: state = dfuIDLE, status = 0
+dfuIDLE, continuing
+DFU mode device DFU version 011a
+Device returned transfer size 4096
+DfuSe interface name: "DCT Flash   "
+Downloading to address = 0x00000822, size = 512
+.
+File downloaded successfully
+Okay!  New keys in place, your device will not restart.
+```
+
+Restart and do what you need.
+
+# FAQ
+
+* Do we have to run the server software as the `pi` user?
+  * Unknown.  Needs to be tried out.  The `pi` user generally
+  has access to everything.  If you try it as a separate user
+  look in /etc/group for groups the pi user belongs and add
+  the *new* user to those groups. 
+  * RPi3 `pi` groups: adm, dialout cdrom, sudo, audio, video,
+  plugdev, games, users, input, netdev, spi, i2c, gpio
+* I do not have the lastest firmware on my Photon.
+  * Option 1: If you have dfu-utils installed and working,
+  you can do `particle update`.
+  * Option 2: Once the photon is claimed, you can compile
+  a short piece of firmware and install that on your Photon.
+  Make sure it is attached to the Particle Cloud.  In most
+  cases, the Photon will go into a self heal mode and
+  update the core firmware and eventually start running
+  the test program and the led will be its typical
+  breathing light blue.
