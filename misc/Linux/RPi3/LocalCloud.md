@@ -634,7 +634,6 @@ cd /spark
 git clone https://github.com/spark/spark-server.git
 cd spark-server
 npm install
-node main.js
 ```
 
 Result:
@@ -750,8 +749,17 @@ make: Entering directory '/spark/spark-server/node_modules/ursa/build'
       └── xtend@4.0.1 
 ```
 
+# Apply a small patch in spark-protocol
+
+`cd /spark/spark-server/node_modules/spark-protocl/lib`
+
+REF: https://github.com/spark/spark-protocol/pull/14/files
+
 # Start the server
 
+```
+node main.js
+```
 Result:
 
 ```
@@ -817,6 +825,7 @@ NOTE: These commands are run on the server running the "localCloud"
 software.  One terminal is in use now running `node main.js`, log in
 again and get to the command line to run more commands to set
 things up.
+
 
 ## Log in again and switch to the `pi` user
 
@@ -916,5 +925,4 @@ particle setup
 ```
 
 # Check for a connection
-
 
