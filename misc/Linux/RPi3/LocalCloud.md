@@ -1112,3 +1112,43 @@ Restart and do what you need.
   update the core firmware and eventually start running
   the test program and the led will be its typical
   breathing light blue.
+* If the particle CLI is updated, you can update using
+  * `npm update -g particle-cli`
+* Enable https for the local cloud.
+  * [See](https://community.particle.io/t/tutorial-local-cloud-1st-time-instructions-01-oct-15/5589/138) this article.
+
+# Notes
+
+[GitBook Tutorial](https://kennethlimcp.gitbooks.io/spark-local-cloud-on-raspberry-pi/content/)
+
+[Windows Tutorial](http://community.spark.io/t/tutorial-local-cloud-on-windows-25-july-2014/5949):
+This includes tidbits on how to get openssl working (if needed).
+
+* July 14, 2015: https://community.particle.io/t/private-event-seems-didnt-get-to-work-in-local-cloud/9415/12
+
+> Indication that a code refactor was going to take place with
+spark-protocol and spark-server to become
+particle-protocol and particle-server.
+
+## Submitted patches
+
+REF: https://community.particle.io/t/tutorial-local-cloud-1st-time-instructions-01-oct-15/5589
+
+Review [comment](https://community.particle.io/t/tutorial-local-cloud-1st-time-instructions-01-oct-15/5589/136)
+about Particle-CLI not working with Photon.
+
+## Review of pull requests and issues
+
+These are issues that remain open and have not been merged with any of
+the original masters.
+
+### spark-protocol
+
+### spark-server
+
+* [#28](https://github.com/spark/spark-server/issues/28): particle list problem
+  * [Pull request](https://github.com/lbt/spark-server/commit/7d52212dc3b0c9d1d64343a201b63431b7e51396)
+  * Restart the server or use the patch
+* [#36](https://github.com/spark/spark-server/issues/36): Private event problem
+  * [Pull request](https://github.com/lbt/spark-server/commit/41fe61b672f6ef2ddcf18778eb2d6620e5f4c8c9)
+* [#65](https://github.com/spark/spark-server/pull/65): Multiuser support
